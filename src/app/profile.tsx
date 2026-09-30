@@ -1,7 +1,7 @@
 import { Button } from '@/components/Button';
 import { GradientText } from '@/components/GradientText';
+import { Card }  from '@/components/Card';
 import { useRouter } from 'expo-router';
-import { useReducer } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 
 const mockProfile = {
@@ -40,16 +40,15 @@ export default function Profile() {
       showsVerticalScrollIndicator={false}
     >
       <View className="flex flex-row gap-4">
-        <Image
+        <Image className='rounded-full h-20 w-20'
           source={{ uri: mockProfile.avatar }}
-          style={styles.avatar}
         />
         <View className="flex flex-col">
           <GradientText className="text-xl font-bold">
             {mockProfile.sequency}
           </GradientText>
           <View>
-            <Text className="text-3xl text-slate-600 dark:text-slate-400 font-extrabold">
+            <Text className="text-3xl text-slate-600 dark:text-slate-200 font-extrabold">
               {mockProfile.name}
             </Text>
             <Text className="font-nunito text-slate-400 dark:text-slate-500 text-base mt-1" >
@@ -79,42 +78,15 @@ export default function Profile() {
           </GradientText>
         </View>
         {mockProfile.inProgressTracks.map((track) => (
-          <View key={track.id} className='flex w-full gap-2'>
-            <View className='bg-slate-50 shadow-md dark:shadow-md shadow-slate-600
-             dark:shadow-purple-700 dark:bg-slate-800 rounded-2xl p-4'>
-              <Text className="text-slate-600 dark:text-slate-400 text-lg font-semibold">
-                {track.title}
-              </Text>
-              <Text className="font-nunito text-red-500 text-md font-bold">
-                {track.progress}%
-              </Text>
-              <Text className="font bold text-slate-400 dark:text-slate-500">
-                Quizzes restantes: {track.restante}
-              </Text>
-            </View>
-            <View>
-              <View
-                style={[
-                  {
-                    width: `${track.progress}%`,
-                  }
-                ]}
-              />
-            </View>
-          </View>
+          <Card 
+          key={track.id} 
+          title={track.title} 
+          progress={track.restante}
+          restante={track.progress}
+          />
         ))}
       </View>
       <Button title='Voltar' onPress={returnLogin}></Button>
     </ScrollView >
   );
 }
-
-
-
-const styles = StyleSheet.create({
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  }
-})

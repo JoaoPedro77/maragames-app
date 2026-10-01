@@ -1,5 +1,6 @@
 import { Button } from '@/components/Button';
 import { GradientText } from '@/components/GradientText';
+import { Icon } from '@/components/Icon'
 import { Input } from '@/components/Input';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -44,8 +45,8 @@ export default function LoginScreen() {
 
           <View className="mb-10">
             <GradientText>Bem-vindo de volta</GradientText>
-            <Text className="mt-3 text-base leading-6 text-slate-600 dark:text-slate-400">
-              Insira suas credenciais para acessar a sua conta.
+            <Text className="mt-3 text-lg leading-6 text-slate-600 dark:text-slate-400">
+              Insira as suas credenciais para acessar a sua conta.
             </Text>
           </View>
 
@@ -68,7 +69,7 @@ export default function LoginScreen() {
               secureTextEntry
             />
 
-            <Button title="Entrar" onPress={handleLogin} />
+            <Button title="Entrar" icon='tdesign:gesture-click-filled' onPress={handleLogin} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

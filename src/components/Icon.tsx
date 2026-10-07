@@ -1,11 +1,11 @@
-import { Iconify } from 'react-native-iconify';
+import MaterialDesignIcons, { MaterialDesignIconsIconName } from '@react-native-vector-icons/material-design-icons';
 
 type IconProps = {
-  name: string;
+  name: MaterialDesignIconsIconName;
   size?: number;
   color?: string;
 };
 
 export function Icon({ name, size = 24, color = 'currentColor' }: IconProps) {
-  return <Iconify icon={name} width={size} height={size} color={color} />;
+  return <MaterialDesignIcons name={name} size={size} color={color} />;
 }

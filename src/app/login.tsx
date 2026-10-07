@@ -1,6 +1,5 @@
 import { Button } from '@/components/Button';
 import { GradientText } from '@/components/GradientText';
-import { Icon } from '@/components/Icon'
 import { Input } from '@/components/Input';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -69,7 +68,7 @@ export default function LoginScreen() {
               secureTextEntry
             />
 
-            <Button title="Entrar" icon='tdesign:gesture-click-filled' onPress={handleLogin} />
+            <Button title="Entrar" icon='login-variant' size={20} onPress={handleLogin} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

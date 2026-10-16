@@ -51,6 +51,9 @@ export default function LoginScreen() {
 
           <View className="gap-5">
             <Input
+            icon="email-outline"
+            size={20}
+            color="#94a3b8"
               label="E-mail"
               autoCapitalize="none"
               autoComplete="email"
@@ -60,6 +63,9 @@ export default function LoginScreen() {
             />
 
             <Input
+            icon="key-outline"
+            size={18.5}
+            color="#94a3b8"
               label="Senha"
               autoComplete="current-password"
               onSubmitEditing={handleLogin}

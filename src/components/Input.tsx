@@ -1,15 +1,24 @@
 import { Text, TextInput, TextInputProps, View } from 'react-native';
+import type { MaterialDesignIconsIconName } from '@react-native-vector-icons/material-design-icons';
+import { Icon } from './Icon';
+
 
 type InputProps = TextInputProps & {
-  label: string;
+  label?: string;
+  icon?: MaterialDesignIconsIconName;
+  size?: number;
+  color?: string;
 };
 
-export function Input({ label, ...props }: InputProps) {
+export function Input({ label, icon, size, color, ...props }: InputProps) {
   return (
     <View>
-      <Text className="mb-2 text-lg font-semibold text-slate-700 dark:text-slate-400">
-        {label}
-      </Text>
+      <View className="flex-row justify-between items-center gap-2 mb-1 mx-2">
+        <Text className="text-lg font-semibold text-slate-700 dark:text-slate-400">
+          {label}
+        </Text>
+        {icon && <Icon name={icon} size={size} color={color || "white"} />}
+      </View>
 
       <TextInput
         accessibilityLabel={label}

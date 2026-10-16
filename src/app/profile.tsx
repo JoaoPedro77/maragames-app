@@ -1,7 +1,8 @@
 import { Button } from '@/components/Button';
 import { GradientText } from '@/components/GradientText';
 import { Card } from '@/components/Card';
-import { Header } from '@/components/Header'
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
 import { useRouter } from 'expo-router';
 import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 
@@ -32,11 +33,11 @@ export default function Profile() {
   const router = useRouter()
 
   function returnLogin() {
-    router.replace('/login');
+    router.back();
   }
 
   return (
-    <View className="flex-1 bg-white dark:bg-slate-900">
+    <View className="flex h-full bg-white dark:bg-slate-900 mb-11">
       <Header onPress={returnLogin} icon="arrow-left" size={27} />
 
       <ScrollView
@@ -85,18 +86,20 @@ export default function Profile() {
               Trilhas em Andamento
             </Text>
           </View>
+
           {mockProfile.inProgressTracks.map((track) => (
             <Card
+              typeCard="discente"
               key={track.id}
               title={track.title}
               progress={track.restante + '%'}
               restante={track.progress}
             />
           ))}
-
         </View>
-        <Button title='Voltar' icon="arrow-left" size={20} onPress={returnLogin}></Button>
+        <Button title='Voltar' icon="arrow-left" size={20} onPress={() => router.push('/rank')}></Button>
       </ScrollView >
+      <Footer />
     </View>
   );
 }

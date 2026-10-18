@@ -74,7 +74,7 @@ export default function LoginScreen() {
               secureTextEntry
             />
 
-            <Button title="Entrar" icon='login-variant' size={20} onPress={handleLogin} />
+            <Button typeButton='default' title="Entrar" icon='login-variant' size={20} onPress={handleLogin} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

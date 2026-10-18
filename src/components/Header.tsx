@@ -7,7 +7,7 @@ export function Header(props: any): any {
         <View className='w-full px-6 mt-12'>
             <View className='flex-row items-center justify-between'>
                 <View className='flex-row items-center gap-3'>
-                    <Button onPress={props.onPress} icon={props.icon}
+                    <Button typeButton='default' onPress={props.onPress} icon={props.icon}
                         size={props.size} className='flex-row items-center' />
                     <View className='flex-row'>
                         <Image
@@ -22,7 +22,7 @@ export function Header(props: any): any {
                 </View>
                 <View className='flex-row gap-2'>
                     <Text className='text-white'></Text>
-                    <Button className='flex-row items-center
+                    <Button typeButton='default' className='flex-row items-center
                      p-1.5 rounded-xl' icon="cog-outline" size={26} />
                 </View>
             </View>

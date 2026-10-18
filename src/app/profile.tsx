@@ -4,7 +4,7 @@ import { Card } from '@/components/Card';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useRouter } from 'expo-router';
-import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Text, Image, ScrollView } from 'react-native';
 
 const mockProfile = {
   name: 'João da Silva',
@@ -97,7 +97,7 @@ export default function Profile() {
             />
           ))}
         </View>
-        <Button title='Voltar' icon="arrow-left" size={20} onPress={() => router.push('/rank')}></Button>
+        <Button typeButton='default' title='Voltar' icon="arrow-left" size={20} onPress={() => router.push('/rank')}></Button>
       </ScrollView >
       <Footer />
     </View>

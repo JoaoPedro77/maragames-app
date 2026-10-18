@@ -5,6 +5,7 @@
   "dependencies": {
     "@react-native-masked-view/masked-view": "0.3.2",
     "@react-native-vector-icons/material-design-icons": "^13.1.4",
+    "@supabase/supabase-js": "^2.118.0",
     "axios": "^1.20.0",
     "expo": "~57.0.26",
     "expo-constants": "~57.0.19",

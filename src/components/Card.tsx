@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { View, Text, Pressable } from 'react-native'
 
 type DiscenteProps = {
@@ -29,16 +30,27 @@ export function Card(props: DiscenteProps | RankProps) {
 }
 
 export function RankCard(props: RankProps) {
+    const [pressed, setPressed] = useState(false)
+
+    const baseClasses = props.rank === 1
+        ? 'flex-row justify-between items-center w-full dark:border dark:border-purple-700 shadow-md shadow-slate-500 dark:shadow-slate-900 rounded-xl p-4'
+        : 'flex-row justify-between items-center w-full dark:border dark:border-slate-700 shadow-md shadow-slate-500 dark:shadow-slate-900 rounded-xl p-4'
+
+    const bgClasses = pressed
+        ? 'bg-slate-300 dark:bg-slate-600'
+        : 'bg-slate-50 dark:bg-slate-800'
 
     return (
-        <Pressable accessibilityRole="button" onPress={props.onPress} key={props.id} className='flex w-full gap-3 my-1'>
-            <View className={
-                props.rank === 1 
-                ? 'bg-slate-50 flex-row justify-between items-center w-full dark:border dark:border-purple-700 shadow-md shadow-slate-500 dark:shadow-slate-900 dark:bg-slate-800 rounded-xl p-4' 
-                : 'bg-slate-50 flex-row justify-between items-center w-full dark:border dark:border-slate-700 shadow-md shadow-slate-500 dark:shadow-slate-900 dark:bg-slate-800 rounded-xl p-4'
-                }>
+        <Pressable
+            accessibilityRole="button"
+            onPress={props.onPress}
+            onPressIn={() => setPressed(true)}
+            onPressOut={() => setPressed(false)}
+            className='flex w-full gap-3 my-1'
+        >
+            <View className={`${baseClasses} ${bgClasses}`}>
                 <View className='flex-row items-center gap-3'>
-                    <Text className="text-slate-100 dark:text-red-200 text-2xl font-semibold">
+                    <Text className="text-slate-900 dark:text-red-200 text-2xl font-semibold">
                         {props.rank >= 10 ? props.rank : '0' + props.rank}
                     </Text>
 
@@ -49,7 +61,7 @@ export function RankCard(props: RankProps) {
                     </View>
 
                     <View>
-                        <Text className="text-slate-100 dark:text-slate-00 text-lg font-semibold">
+                        <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
                             {props.nome}
                         </Text>
 
@@ -72,12 +84,13 @@ export function RankCard(props: RankProps) {
 }
 
 function DiscenteCard(props: DiscenteProps) {
+    
     return (
         <View key={props.id} className='flex w-full gap-3 m-1'>
             <View className='bg-slate-50 flex-row justify-between items-center w-full dark:border
              dark:border-slate-700 shadow-md shadow-slate-500 dark:shadow-slate-800 dark:bg-slate-800 rounded-xl p-4'>
                 <View>
-                    <Text className="text-slate-100 dark:text-slate-00 text-lg font-semibold">
+                    <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
                         {props.title}
                     </Text>
 

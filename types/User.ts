@@ -10,6 +10,7 @@ export type GestorInstituicao = {
     instituicao_id: number
     nome: string
     email: string
+    senha: string
 }
 
 export type AlunoInstituicao = {
@@ -17,6 +18,7 @@ export type AlunoInstituicao = {
     instituicao_id: number
     nome: string
     email: string
+    senha: string
     xp: number
     nivel: number
     posicao_ranking: number | null

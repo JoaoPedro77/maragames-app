@@ -68,8 +68,8 @@ function ButtonFooter({ title, icon, size, color, route, ativo = false, ...props
       onPress={() => router.push(route)}
       className={
         !ativo
-          ? "h-16 w-28 items-center p-3 justify-center rounded-lg bg-slate-800 active:bg-slate-700"
-          : "h-16 w-28 items-center p-3 justify-center rounded-2xl bg-red-600 active:bg-red-900"
+          ? "h-16 w-1/3 items-center p-3 justify-center rounded-lg bg-slate-800 active:bg-slate-700"
+          : "h-16 w-1/3 items-center p-3 justify-center rounded-lg bg-red-600 active:bg-red-900"
       }
       {...props}
     >
@@ -87,8 +87,8 @@ function ButtonTabs({ title, icon, size, color, ativo = false, ...props }: Butto
       accessibilityRole="button"
       className={
         !ativo
-          ? "items-center w-full h-full justify-center rounded-xl bg-slate-800 active:bg-red-800"
-          : "items-center w-full h-full justify-center rounded-xl bg-red-600 active:bg-red-800"
+          ? "items-center w-full h-full justify-center rounded-full bg-slate-800 active:bg-slate-700"
+          : "items-center w-full h-full justify-center rounded-full bg-red-600 active:bg-red-800"
       }
       {...props}
     >

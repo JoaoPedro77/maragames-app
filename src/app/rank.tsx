@@ -27,7 +27,8 @@ export default function Rank() {
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <Header onPress={() => router.back()} icon="arrow-left" size={27} />
+            <Header onPress={() => {
+                router.back()}} icon="arrow-left" size={27} />
             <ScrollView
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}

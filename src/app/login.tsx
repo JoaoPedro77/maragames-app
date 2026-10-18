@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const router = useRouter();
 
   function handleLogin() {
-    router.replace('/profile');
+    router.replace('/rank');
   }
 
   return (

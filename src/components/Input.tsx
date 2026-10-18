@@ -13,11 +13,11 @@ type InputProps = TextInputProps & {
 export function Input({ label, icon, size, color, ...props }: InputProps) {
   return (
     <View>
-      <View className="flex-row justify-between items-center gap-2 mb-1 mx-2">
+      <View className="flex-row items-center gap-2 mb-1 mx-1">
+        {icon && <Icon name={icon} size={size} color={color || "white"} />}
         <Text className="text-lg font-semibold text-slate-700 dark:text-slate-400">
           {label}
         </Text>
-        {icon && <Icon name={icon} size={size} color={color || "white"} />}
       </View>
 
       <TextInput

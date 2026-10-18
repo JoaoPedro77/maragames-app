@@ -1,4 +1,3 @@
-import { Button } from '@/components/Button';
 import { GradientText } from '@/components/GradientText';
 import { Card } from '@/components/Card';
 import { Header } from '@/components/Header';
@@ -32,13 +31,9 @@ export default function Profile() {
 
   const router = useRouter()
 
-  function returnLogin() {
-    router.back();
-  }
-
   return (
     <View className="flex h-full bg-white dark:bg-slate-900 mb-11">
-      <Header onPress={returnLogin} icon="arrow-left" size={27} />
+      <Header/>
 
       <ScrollView
         className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
@@ -81,8 +76,8 @@ export default function Profile() {
         </View>
 
         <View className='mt-6'>
-          <View className='flex w-full'>
-            <Text className="text-2xl font-extrabold dark:text-purple-100 mb-4">
+          <View className='flex w-full mx-3'>
+            <Text className="text-2xl font-extrabold dark:text-purple-100 mb-2">
               Trilhas em Andamento
             </Text>
           </View>
@@ -97,7 +92,6 @@ export default function Profile() {
             />
           ))}
         </View>
-        <Button typeButton='default' title='Voltar' icon="arrow-left" size={20} onPress={() => router.push('/rank')}></Button>
       </ScrollView >
       <Footer />
     </View>

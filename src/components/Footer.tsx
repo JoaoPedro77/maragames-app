@@ -16,20 +16,21 @@ export function Footer() {
 
     return (
         <View className='w-full px-6'>
-
             <View className='border-hairline border-slate-600' />
-            <View className="w-full flex-row justify-around items-center bg-slate-900 h-24">
-                {buttons.map((button, index) => (
-                    <Button
-                        typeButton="footer"
-                        key={index}
-                        title={button.title}
-                        size={button.size}
-                        icon={button.icon}
-                        route={button.route}
-                        ativo={pathname === button.route}
-                    />
-                ))}
+            <View className="w-full flex-row justify-between items-center bg-slate-900 h-24">
+                <View className="w-full flex-row justify-between items-center rounded-xl bg-slate-800">
+                    {buttons.map((button, index) => (
+                        <Button
+                            typeButton="footer"
+                            key={index}
+                            title={button.title}
+                            size={button.size}
+                            icon={button.icon}
+                            route={button.route}
+                            ativo={pathname === button.route}
+                        />
+                    ))}
+                </View>
             </View>
             <View className='h-10'></View>
         </View>

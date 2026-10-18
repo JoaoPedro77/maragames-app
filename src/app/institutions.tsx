@@ -1,8 +1,6 @@
 import { useRouter } from "expo-router"
 import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
-import { Icon } from "@/components/Icon"
-import { GradientText } from "@/components/GradientText"
 import { View, Text, ScrollView } from "react-native"
 
 export default function Cadastro() {

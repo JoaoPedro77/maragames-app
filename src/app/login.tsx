@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const router = useRouter();
 
   function handleLogin() {
-    router.replace('/profile');
+    router.replace('/rank');
   }
 
   return (
@@ -44,13 +44,16 @@ export default function LoginScreen() {
 
           <View className="mb-10">
             <GradientText>Bem-vindo de volta</GradientText>
-            <Text className="mt-3 text-base leading-6 text-slate-600 dark:text-slate-400">
-              Insira suas credenciais para acessar a sua conta.
+            <Text className="mt-3 text-lg leading-6 text-slate-600 dark:text-slate-400">
+              Insira as suas credenciais para acessar a sua conta.
             </Text>
           </View>
 
           <View className="gap-5">
             <Input
+            icon="email-outline"
+            size={20}
+            color="#94a3b8"
               label="E-mail"
               autoCapitalize="none"
               autoComplete="email"
@@ -60,6 +63,9 @@ export default function LoginScreen() {
             />
 
             <Input
+            icon="key-outline"
+            size={18.5}
+            color="#94a3b8"
               label="Senha"
               autoComplete="current-password"
               onSubmitEditing={handleLogin}
@@ -68,7 +74,7 @@ export default function LoginScreen() {
               secureTextEntry
             />
 
-            <Button title="Entrar" onPress={handleLogin} />
+            <Button typeButton='default' title="Entrar" icon='login-variant' size={20} onPress={handleLogin} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

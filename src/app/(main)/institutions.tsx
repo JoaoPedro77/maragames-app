@@ -34,14 +34,14 @@ const instituicoes: Instituicao[] = [
 
 export default function Cadastro() {
     return (
-        <View className="flex-1 bg-white dark:bg-slate-900">
+        <View className="bg-white dark:bg-slate-900">
             <ScrollView
-                className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
+                className="bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="flex-grow gap-5">
+                <View className="gap-5">
                     <View className="flex-row">
-                        <View className="flex-grow gap-1 w-1/3">
+                        <View>
                             <Text className="text-3xl font-extrabold dark:text-slate-100">
                                 Instituições
                             </Text>
@@ -52,7 +52,7 @@ export default function Cadastro() {
                     </View>
                     <View className="flex-row gap-3">
                         {dados.map((dado) => (
-                            <PageCard key={dado.title} className="flex-1 " contentClassName="gap-1">
+                            <PageCard key={dado.title} className="flex-1">
                                 <View className='flex-row gap-1 items-center'>
                                     <Icon name={dado.icon} size={16} color="#94a3b8" darkColor="#cbd5e1" />
                                     <Text className="text-sm font-bold text-slate-600 dark:text-slate-400">
@@ -65,15 +65,14 @@ export default function Cadastro() {
                             </PageCard>
                         ))}
                     </View>
-                    <View className="flex-grow gap-2">
+                    <View className="gap-2">
                         <Text className="text-xl font-extrabold dark:text-slate-100">
                             Exibindo {instituicoes.length} Resultados
                         </Text>
-                        <View className="flex-grow gap-3">
+                        <View className="gap-3">
                             {instituicoes.map((inst) => (
                                 <PageCard
                                     key={inst.nome}
-                                    className=""
                                     contentClassName="flex-col"
                                 >
                                     <View className="flex-row justify-between items-center">

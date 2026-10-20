@@ -42,7 +42,7 @@ export function RankCard(props: RankProps) {
         : 'dark:bg-slate-700 bg-slate-300 text-slate-600 dark:text-slate-300'
     
     const bgClasses = pressed
-        ? 'bg-slate-300 dark:bg-slate-600'
+        ? 'bg-slate-200/50 dark:bg-slate-600'
         : 'bg-slate-50 dark:bg-slate-800'
 
     return (

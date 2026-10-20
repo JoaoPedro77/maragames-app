@@ -34,39 +34,39 @@ export default function Profile() {
         showsVerticalScrollIndicator={false}
       >
 
-        <View className="flex flex-row gap-4">
+        <View className="flex flex-row gap-4 items-center">
           <Image className='rounded-full h-20 w-20'
             source={{ uri: mockProfile.avatar }}
           />
-          <View className="flex flex-col">
-            <GradientText className="text-xl font-bold">
-              {mockProfile.sequency}
-            </GradientText>
             <View>
               <Text className="text-3xl text-slate-600 dark:text-slate-200 font-extrabold">
                 {mockProfile.name}
               </Text>
-              <Text className=" text-slate-400 dark:text-slate-500 text-base mt-1" >
+              <Text className=" text-slate-400 dark:text-slate-500 text-lg" >
                 {mockProfile.username}
               </Text>
-            </View>
           </View>
         </View>
-
-        <PageCard className="mt-8" contentClassName="flex-row">
-          {stats.map((stat, index) => (
-            <View key={index} className="flex-grow p-1">
-              <View className='flex-grow items-center'>
-                <Text className="text-slate-600 dark:text-slate-400 text-md font-medium mb-1">
-                  {stat.label}
-                </Text>
-                <Text className="text-red-500 text-2xl font-bold">
-                  {stat.value}
-                </Text>
+        
+        <View className="flex flex-col gap-2 items-center justify-center">
+          <GradientText className="text-xl font-bold">
+            {mockProfile.sequency}
+          </GradientText>
+          <PageCard className="mt-8" contentClassName="flex-row">
+            {stats.map((stat, index) => (
+              <View key={index} className="flex-grow p-1">
+                <View className='flex-grow items-center'>
+                  <Text className="text-slate-600 dark:text-slate-400 text-md font-medium mb-1">
+                    {stat.label}
+                  </Text>
+                  <Text className="text-red-500 text-2xl font-bold">
+                    {stat.value}
+                  </Text>
+                </View>
               </View>
-            </View>
-          ))}
-        </PageCard>
+            ))}
+          </PageCard>
+        </View>
 
         <View className='mt-6'>
           <View className='flex w-full mx-3'>

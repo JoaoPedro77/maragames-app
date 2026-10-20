@@ -55,7 +55,7 @@ export default function Profile() {
 
         <PageCard className="mt-8" contentClassName="flex-row">
           {stats.map((stat, index) => (
-            <View key={index} className="flex-grow p-3">
+            <View key={index} className="flex-grow p-1">
               <View className='flex-grow items-center'>
                 <Text className="text-slate-600 dark:text-slate-400 text-md font-medium mb-1">
                   {stat.label}

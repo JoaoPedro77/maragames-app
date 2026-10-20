@@ -91,7 +91,7 @@ export default function Cadastro() {
                                         </View>
                                     </View>
                                     <View>
-                                        <Button className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-700 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
+                                        <Button className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-500 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
                                             typeButton="default"
                                             title="Detalhes"
                                             icon='information-slab-circle-outline'

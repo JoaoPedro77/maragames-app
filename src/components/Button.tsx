@@ -90,8 +90,8 @@ function ButtonTabs({ title, icon, size, color, darkColor, ativo = false, ...pro
       accessibilityRole="button"
       className={
         !ativo
-          ? "items-center w-full h-full justify-center rounded-full bg-slate-100 active:bg-slate-300 dark:bg-slate-800 dark:active:bg-slate-700"
-          : "items-center w-full h-full justify-center rounded-full bg-red-600 active:bg-red-800"
+          ? "items-center w-full h-full justify-center rounded-xl bg-slate-100 active:bg-slate-300 dark:bg-slate-800 dark:active:bg-slate-700"
+          : "items-center w-full h-full justify-center rounded-xl bg-red-600 active:bg-red-800"
       }
       {...props}
     >

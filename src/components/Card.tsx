@@ -103,7 +103,7 @@ export function RankCard(props: RankProps) {
 function DiscenteCard(props: DiscenteProps) {
 
     return (
-        <View key={props.id} className='flex w-full gap-3 m-1'>
+        <View key={props.id} className='flex w-full gap-3'>
             <View className='bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 flex-row justify-between items-center w-full dark:border rounded-xl p-4'>
                 <View>
                     <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">

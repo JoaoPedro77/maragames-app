@@ -2,7 +2,7 @@ import { GradientText } from '@/components/GradientText';
 import { Card } from '@/components/Card';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { useRouter } from 'expo-router';
+import { PageCard } from '@/components/PageCard';
 import { View, Text, Image, ScrollView } from 'react-native';
 
 const mockProfile = {
@@ -28,8 +28,6 @@ export default function Profile() {
     { label: 'Rank', value: `#${mockProfile.rank}` },
     { label: 'Concluídas', value: mockProfile.completedTracks.toString() },
   ];
-
-  const router = useRouter()
 
   return (
     <View className="flex h-full bg-white dark:bg-slate-900 mb-11">
@@ -59,7 +57,7 @@ export default function Profile() {
           </View>
         </View>
 
-        <View className="flex flex-row rounded-xl dark:border mt-8 bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800">
+        <PageCard className="mt-8" contentClassName="flex-row">
           {stats.map((stat, index) => (
             <View key={index} className="flex-grow p-3">
               <View className='flex-grow items-center'>
@@ -72,7 +70,7 @@ export default function Profile() {
               </View>
             </View>
           ))}
-        </View>
+        </PageCard>
 
         <View className='mt-6'>
           <View className='flex w-full mx-3'>

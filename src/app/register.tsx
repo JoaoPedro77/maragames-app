@@ -5,7 +5,7 @@ import { Button } from "@/components/Button"
 import { View, ScrollView, Text, TextInputProps } from "react-native"
 import { useState } from "react"
 import { Input } from "@/components/Input"
-import { Icon } from "@/components/Icon"
+import { PageCard } from "@/components/PageCard"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 
 type Campo = {
@@ -28,7 +28,7 @@ type Aba = {
 
 const abas: Aba[] = [
     {
-        id: "instituicao", title: "+ Instituição", icon: "bank",
+        id: "instituicao", title: "Instituição", icon: "bank",
         campos: [
             { label: "Nome da Instituição", icon: "bank", keyboardType: "default", placeholder: "Ex: Colégio Maragames" },
             { label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email" },
@@ -37,7 +37,7 @@ const abas: Aba[] = [
         ]
     },
     {
-        id: "gestor", title: "+ Gestor", icon: "account-tie",
+        id: "gestor", title: "Gestor", icon: "account-tie",
         campos: [
             { label: "Nome do Gestor", icon: "account-tie", keyboardType: "default", placeholder: "Ex: Maria Souza" },
             { label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição" },
@@ -46,7 +46,7 @@ const abas: Aba[] = [
         ]
     },
     {
-        id: "aluno", title: "+ Aluno", icon: "account-school",
+        id: "aluno", title: "Aluno", icon: "account-school",
         campos: [
             { label: "Nome do Aluno", icon: "account-school", keyboardType: "default", placeholder: "Ex: Maria Souza" },
             { label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição" },
@@ -74,7 +74,10 @@ export default function Cadastro() {
                 showsVerticalScrollIndicator={false}
             >
                 <View className="flex-grow gap-5">
-                    <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-full">
+                    <Text className="text-lg leading-6 text-slate-600 dark:text-slate-400">
+                        Selecione o tipo de cadastro:
+                    </Text>
+                    <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-xl">
                         {abas.map((aba) => (
                             <View key={aba.id} className="w-1/3">
                                 <Button
@@ -90,11 +93,12 @@ export default function Cadastro() {
                             </View>
                         ))}
                     </View>
-                    <View className="flex-grow p-5 bg-slate-100 dark:bg-[#142134] border border-slate-300 dark:border-slate-700 rounded-2xl w-full">
-                        <Text className="text-xl font-bold dark:text-purple-100 mb-4">
-                            <Icon name="form-select" size={22} color='#647082' darkColor='#b5bcc7' /> CADASTRAR{" "}
-                            {abaAtivaInfo?.title.replace("+ ", "").toUpperCase()}
-                        </Text>
+                    <PageCard
+                        title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
+                        icon="form-select"
+                        footer={<Button typeButton="default" title="Confirmar" icon="check" />}
+                        footerClassName="mt-5"
+                    >
                         {abaAtivaInfo && (
                             <View key={abaAtiva} className="flex-grow gap-5">
                                 {abaAtivaInfo.campos.map((campo, index) => (
@@ -112,10 +116,9 @@ export default function Cadastro() {
                                         returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
                                     />
                                 ))}
-                                <Button typeButton="default" title="Confirmar" icon="check"/>
                             </View>
                         )}
-                    </View>
+                    </PageCard>
                 </View>
             </ScrollView>
             <Footer />

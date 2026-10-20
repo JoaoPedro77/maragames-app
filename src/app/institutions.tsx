@@ -4,6 +4,8 @@ import { Footer } from "@/components/Footer"
 import { Button } from "@/components/Button"
 import { View, Text, ScrollView } from "react-native"
 import { Icon } from "@/components/Icon"
+import { PageCard } from "@/components/PageCard"
+import { Badge } from "@/components/Badge"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 
 type Dado = {
@@ -57,16 +59,10 @@ export default function Cadastro() {
                                 Escolha uma instituição para gerenciá-la
                             </Text>
                         </View>
-                        <View>
-                            <Button onPress={() => router.replace('/register')} className="w-28 p-2 rounded-xl bg-red-600 active:bg-red-900" typeButton="default" title="+ Nova" />
-                        </View>
                     </View>
                     <View className="flex-row gap-3">
                         {dados.map((dado) => (
-                            <View
-                                key={dado.title}
-                                className="flex-1 gap-1 p-4 bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 rounded-xl"
-                            >
+                            <PageCard key={dado.title} className="flex-1 " contentClassName="gap-1">
                                 <View className='flex-row gap-1 items-center'>
                                     <Icon name={dado.icon} size={16} color="#94a3b8" darkColor="#cbd5e1" />
                                     <Text className="text-sm font-bold text-slate-600 dark:text-slate-400">
@@ -76,7 +72,7 @@ export default function Cadastro() {
                                 <Text className="text-2xl font-extrabold dark:text-slate-100">
                                     {dado.number}
                                 </Text>
-                            </View>
+                            </PageCard>
                         ))}
                     </View>
                     <View className="flex-grow gap-2">
@@ -85,36 +81,23 @@ export default function Cadastro() {
                         </Text>
                         <View className="flex-grow gap-3">
                             {instituicoes.map((inst) => (
-                                <View
+                                <PageCard
                                     key={inst.nome}
-                                    className="flex-grow justify-between p-4 bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 rounded-xl"
+                                    className=""
+                                    contentClassName="flex-col"
                                 >
-                                    <View className="flex-row gap-6">
-                                        <View className="flex-grow gap-1">
-                                            <Text className="text-xl font-extrabold dark:text-slate-100">
+                                    <View className="flex-row justify-between items-center">
+                                        <View className="flex-col gap-1">
+                                            <Text className="text-xl font-extrabold dark:text-slate-100 max-w-40">
                                                 {inst.nome}
                                             </Text>
                                             <Text className="text-md font-semibold text-slate-600 dark:text-slate-400">
                                                 {inst.tipo}
                                             </Text>
                                         </View>
-                                        <View className="flex-row gap-2 rounded-lg bg-slate-200 dark:bg-[#192231] p-2">
-                                            <View className="items-center ">
-                                                <Text className="text-md  font-semibold text-slate-600 dark:text-slate-400">
-                                                    Gestores
-                                                </Text>
-                                                <Text className="text-xl font-extrabold dark:text-slate-100">
-                                                    {inst.gestores}
-                                                </Text>
-                                            </View>
-                                            <View className="items-center">
-                                                <Text className="text-md font-semibold text-slate-600 dark:text-slate-400">
-                                                    Alunos
-                                                </Text>
-                                                <Text className="text-xl font-extrabold dark:text-slate-100">
-                                                    {inst.alunos}
-                                                </Text>
-                                            </View>
+                                        <View className="flex-col gap-1 items-end">
+                                            <Badge label="Gestores" value={inst.gestores} />
+                                            <Badge label="Alunos" value={inst.alunos} />
                                         </View>
                                     </View>
                                     <View>
@@ -125,7 +108,7 @@ export default function Cadastro() {
                                             size={18}
                                         />
                                     </View>
-                                </View>
+                                </PageCard>
                             ))}
                         </View>
                     </View>

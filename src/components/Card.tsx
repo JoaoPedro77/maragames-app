@@ -34,9 +34,13 @@ export function RankCard(props: RankProps) {
     const [pressed, setPressed] = useState(false)
 
     const baseClasses = props.rank === 1
-        ? 'flex-row justify-between items-center w-full dark:border-2 dark:border-violet-700 border-2 border-[#3a2681] rounded-xl p-4'
-        : 'flex-row justify-between items-center w-full bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-4'
+        ? 'flex-row justify-between items-center w-full dark:border-2 dark:border-violet-700 border-2 border-violet-700 rounded-xl p-4'
+        : 'flex-row justify-between items-center w-full bg-slate-50 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-4'
 
+    const textClasses = props.rank === 1
+        ? 'dark:bg-violet-700 bg-violet-700 text-white'
+        : 'dark:bg-slate-700 bg-slate-300 text-slate-600 dark:text-slate-300'
+    
     const bgClasses = pressed
         ? 'bg-slate-300 dark:bg-slate-600'
         : 'bg-slate-50 dark:bg-slate-800'
@@ -50,12 +54,11 @@ export function RankCard(props: RankProps) {
             className='flex w-full gap-3 my-1'
         >
             <View className={`${baseClasses} ${bgClasses}`}>
-                <View className='flex-row items-center gap-3'>
-                    <Text className="text-slate-900 dark:text-red-200 text-2xl font-semibold">
+                <View className='relative flex-row items-center gap-3'>
+                    <Text className={`${textClasses} absolute z-10 -left-4 -top-4 rounded-br-lg rounded-tl-lg size-6 text-md font-semibold text-center`}>
                         {props.rank >= 10 ? props.rank : '0' + props.rank}
                     </Text>
-
-                    <View className='bg-slate-300 dark:bg-slate-700 rounded-full w-12 h-12 items-center justify-center'>
+                    <View className='bg-slate-300 dark:bg-slate-700 rounded-full ml-2 w-12 h-12 items-center justify-center'>
                         {
                             props.rank === 1
                                 ? <GradientText className="text-2xl font-bold">
@@ -88,7 +91,7 @@ export function RankCard(props: RankProps) {
                     <Text className="text-red-500 text-xl font-bold ">
                         {props.xp}
                     </Text>
-                    <Text className="dark:text-red-200 text-slate-900 text-md font-extrabold">
+                    <Text className="text-slate-400 text-md font-extrabold">
                         XP
                     </Text>
                 </View>

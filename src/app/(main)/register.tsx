@@ -1,7 +1,6 @@
 import { Button } from "@/components/Button"
 import { View, ScrollView, Text, TextInputProps } from "react-native"
 import { useState } from "react"
-import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
 import { Input } from "@/components/Input"
 import { PageCard } from "@/components/PageCard"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
@@ -56,14 +55,8 @@ const abas: Aba[] = [
 
 export default function Cadastro() {
     const [abaAtiva, setAbaAtiva] = useState<AbaId>("instituicao")
-    const [direcao, setDirecao] = useState<1 | -1>(1)
 
     const abaAtivaInfo = abas.find((aba) => aba.id === abaAtiva)
-    const abaAtivaIndex = abas.findIndex((aba) => aba.id === abaAtiva)
-    const entrada =
-        direcao > 0
-            ? FadeInRight.withInitialValues({ opacity: 1 }).duration(220)
-            : FadeInLeft.withInitialValues({ opacity: 1 }).duration(220)
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
@@ -76,7 +69,7 @@ export default function Cadastro() {
                         Selecione o tipo de cadastro:
                     </Text>
                     <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-xl">
-                        {abas.map((aba, index) => (
+                        {abas.map((aba) => (
                             <View key={aba.id} className="w-1/3">
                                 <Button
                                     typeButton="tabs"
@@ -86,15 +79,12 @@ export default function Cadastro() {
                                     icon={aba.icon}
                                     size={15}
                                     ativo={abaAtiva === aba.id}
-                                    onPress={() => {
-                                        setDirecao(index >= abaAtivaIndex ? 1 : -1)
-                                        setAbaAtiva(aba.id)
-                                    }}
+                                    onPress={() => setAbaAtiva(aba.id)}
                                 />
                             </View>
                         ))}
                     </View>
-                    <Animated.View key={abaAtiva} entering={entrada} className="bg-white dark:bg-slate-900">
+                    <View key={abaAtiva} className="bg-white dark:bg-slate-900">
                         <PageCard
                             title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
                             icon="form-select"
@@ -121,7 +111,7 @@ export default function Cadastro() {
                                 </View>
                             )}
                         </PageCard>
-                    </Animated.View>
+                    </View>
                 </View>
             </ScrollView>
         </View>

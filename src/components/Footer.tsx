@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import type { MaterialDesignIconsIconName } from '@react-native-vector-icons/material-design-icons';
 import { Button } from "./Button";
-import { usePathname } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 
 import type { Href } from "expo-router";
 
@@ -13,6 +13,7 @@ const buttons = [
 
 export function Footer() {
     const pathname = usePathname()
+    const router = useRouter()
 
     return (
         <View className='w-full px-6'>
@@ -29,6 +30,13 @@ export function Footer() {
                             color='#334155' 
                             darkColor='white'
                             route={button.route}
+                            onPress={() => {
+                                if (pathname === '/profile') {
+                                    router.dismissTo(button.route)
+                                } else {
+                                    router.navigate(button.route)
+                                }
+                            }}
                             ativo={pathname === button.route || button.match?.includes(pathname)}
                         />
                     ))}

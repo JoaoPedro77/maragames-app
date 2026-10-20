@@ -6,6 +6,7 @@ export function Header(props: any): any {
     const router = useRouter()
     const pathName = usePathname()
     const podeVoltar = pathName === '/profile' || pathName === '/institution' || pathName === '/managers'
+    const podeSair = pathName !== '/profile'
 
     function routeLogout() {
         router.replace('/login')
@@ -38,8 +39,10 @@ export function Header(props: any): any {
                 </View>
                 <View className='flex-row gap-2'>
                     <Text className='text-white'></Text>
-                    <Button onPress={routeLogout} typeButton='default' className='flex-row items-center
-                    p-2.5 rounded-lg dark:bg-slate-900 active:bg-slate-100 dark:active:bg-slate-700 border-slate-200' color='#94a3b8' darkColor='#cbd5e1' icon="logout" size={22} />
+                    {podeSair &&
+                        <Button onPress={routeLogout} typeButton='default' className='flex-row items-center
+                        p-2.5 rounded-lg dark:bg-slate-900 active:bg-slate-100 dark:active:bg-slate-700 border-slate-200' color='#94a3b8' darkColor='#cbd5e1' icon="logout" size={22} />
+                    }
                 </View>
             </View>
             <View className='mt-3' />

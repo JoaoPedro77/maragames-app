@@ -52,7 +52,10 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="index" options={{ animation: 'none' }} />
-            <Stack.Screen name="profile" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen
+              name="profile"
+              options={{ animation: 'fade', animationMatchesGesture: true }}
+            />
           </Stack>
         </View>
         {showChrome && <Footer />}

@@ -58,7 +58,7 @@ export default function Cadastro() {
                             </Text>
                         </View>
                         <View>
-                            <Button onPress={() => router.push('/register')} className="w-28 p-2 rounded-xl bg-red-600 active:bg-red-900" typeButton="default" title="+ Nova" />
+                            <Button onPress={() => router.replace('/register')} className="w-28 p-2 rounded-xl bg-red-600 active:bg-red-900" typeButton="default" title="+ Nova" />
                         </View>
                     </View>
                     <View className="flex-row gap-3">
@@ -68,7 +68,7 @@ export default function Cadastro() {
                                 className="flex-1 gap-1 p-4 bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 rounded-xl"
                             >
                                 <View className='flex-row gap-1 items-center'>
-                                    <Icon name={dado.icon} size={16} color="#94a3b8" />
+                                    <Icon name={dado.icon} size={16} color="#94a3b8" darkColor="#cbd5e1" />
                                     <Text className="text-sm font-bold text-slate-600 dark:text-slate-400">
                                         {dado.title}
                                     </Text>
@@ -98,7 +98,7 @@ export default function Cadastro() {
                                                 {inst.tipo}
                                             </Text>
                                         </View>
-                                        <View className="flex-row gap-2 bg-[#192231] p-2 rounded-xl">
+                                        <View className="flex-row gap-2 rounded-lg bg-slate-200 dark:bg-[#192231] p-2">
                                             <View className="items-center ">
                                                 <Text className="text-md  font-semibold text-slate-600 dark:text-slate-400">
                                                     Gestores
@@ -118,7 +118,7 @@ export default function Cadastro() {
                                         </View>
                                     </View>
                                     <View>
-                                        <Button className="mt-3 h-10 items-center justify-center rounded-xl bg-slate-700 active:bg-slate-600"
+                                        <Button className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-700 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
                                             typeButton="default"
                                             title="Detalhes"
                                             icon='information-slab-circle-outline'

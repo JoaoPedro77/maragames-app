@@ -74,12 +74,14 @@ export default function Cadastro() {
                 showsVerticalScrollIndicator={false}
             >
                 <View className="flex-grow gap-5">
-                    <View className="flex-row h-10 justify-between bg-slate-800 rounded-full">
+                    <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-full">
                         {abas.map((aba) => (
                             <View key={aba.id} className="w-1/3">
                                 <Button
                                     typeButton="tabs"
                                     title={aba.title}
+                                    color='#334155'
+                                    darkColor='white'
                                     icon={aba.icon}
                                     size={15}
                                     ativo={abaAtiva === aba.id}
@@ -88,9 +90,9 @@ export default function Cadastro() {
                             </View>
                         ))}
                     </View>
-                    <View className="flex-grow p-5 bg-slate-800 border-slate-500 rounded-2xl w-full">
+                    <View className="flex-grow p-5 bg-slate-100 dark:bg-[#142134] border border-slate-300 dark:border-slate-700 rounded-2xl w-full">
                         <Text className="text-xl font-bold dark:text-purple-100 mb-4">
-                            <Icon name="form-select" size={22} color="white" /> CADASTRAR{" "}
+                            <Icon name="form-select" size={22} color='#647082' darkColor='#b5bcc7' /> CADASTRAR{" "}
                             {abaAtivaInfo?.title.replace("+ ", "").toUpperCase()}
                         </Text>
                         {abaAtivaInfo && (
@@ -110,6 +112,7 @@ export default function Cadastro() {
                                         returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
                                     />
                                 ))}
+                                <Button typeButton="default" title="Confirmar" icon="check"/>
                             </View>
                         )}
                     </View>

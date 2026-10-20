@@ -1,6 +1,3 @@
-import { useRouter } from "expo-router"
-import { Header } from "@/components/Header"
-import { Footer } from "@/components/Footer"
 import { Button } from "@/components/Button"
 import { View, Text, ScrollView } from "react-native"
 import { Icon } from "@/components/Icon"
@@ -36,15 +33,8 @@ const instituicoes: Instituicao[] = [
 ]
 
 export default function Cadastro() {
-    const router = useRouter()
-
-    function coco() {
-        router.back()
-    }
-
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <Header onPress={coco} icon="arrow-left" size={27} />
             <ScrollView
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
@@ -115,7 +105,6 @@ export default function Cadastro() {
                 </View>
                 <View className='mb-10' />
             </ScrollView>
-            <Footer />
         </View>
     )
 }

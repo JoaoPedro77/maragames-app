@@ -1,9 +1,7 @@
-import { useRouter } from "expo-router"
-import { Header } from "@/components/Header"
-import { Footer } from "@/components/Footer"
 import { Button } from "@/components/Button"
 import { View, ScrollView, Text, TextInputProps } from "react-native"
 import { useState } from "react"
+import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated"
 import { Input } from "@/components/Input"
 import { PageCard } from "@/components/PageCard"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
@@ -58,17 +56,17 @@ const abas: Aba[] = [
 
 export default function Cadastro() {
     const [abaAtiva, setAbaAtiva] = useState<AbaId>("instituicao")
-    const router = useRouter()
-
-    function routeBack() {
-        router.back()
-    }
+    const [direcao, setDirecao] = useState<1 | -1>(1)
 
     const abaAtivaInfo = abas.find((aba) => aba.id === abaAtiva)
+    const abaAtivaIndex = abas.findIndex((aba) => aba.id === abaAtiva)
+    const entrada =
+        direcao > 0
+            ? FadeInRight.withInitialValues({ opacity: 1 }).duration(220)
+            : FadeInLeft.withInitialValues({ opacity: 1 }).duration(220)
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <Header onPress={routeBack} icon="arrow-left" size={27} />
             <ScrollView
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
@@ -78,7 +76,7 @@ export default function Cadastro() {
                         Selecione o tipo de cadastro:
                     </Text>
                     <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-xl">
-                        {abas.map((aba) => (
+                        {abas.map((aba, index) => (
                             <View key={aba.id} className="w-1/3">
                                 <Button
                                     typeButton="tabs"
@@ -88,40 +86,44 @@ export default function Cadastro() {
                                     icon={aba.icon}
                                     size={15}
                                     ativo={abaAtiva === aba.id}
-                                    onPress={() => setAbaAtiva(aba.id)}
+                                    onPress={() => {
+                                        setDirecao(index >= abaAtivaIndex ? 1 : -1)
+                                        setAbaAtiva(aba.id)
+                                    }}
                                 />
                             </View>
                         ))}
                     </View>
-                    <PageCard
-                        title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
-                        icon="form-select"
-                        footer={<Button typeButton="default" title="Confirmar" icon="check" />}
-                        footerClassName="mt-5"
-                    >
-                        {abaAtivaInfo && (
-                            <View key={abaAtiva} className="flex-grow gap-5">
-                                {abaAtivaInfo.campos.map((campo, index) => (
-                                    <Input
-                                        key={campo.label}
-                                        icon={campo.icon}
-                                        size={20}
-                                        color="#94a3b8"
-                                        label={campo.label}
-                                        placeholder={campo.placeholder}
-                                        keyboardType={campo.keyboardType}
-                                        secureTextEntry={campo.secureTextEntry}
-                                        autoComplete={campo.autoComplete}
-                                        autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
-                                        returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
-                                    />
-                                ))}
-                            </View>
-                        )}
-                    </PageCard>
+                    <Animated.View key={abaAtiva} entering={entrada} className="bg-white dark:bg-slate-900">
+                        <PageCard
+                            title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
+                            icon="form-select"
+                            footer={<Button typeButton="default" title="Confirmar" icon="check" />}
+                            footerClassName="mt-5"
+                        >
+                            {abaAtivaInfo && (
+                                <View className="flex-grow gap-5">
+                                    {abaAtivaInfo.campos.map((campo, index) => (
+                                        <Input
+                                            key={campo.label}
+                                            icon={campo.icon}
+                                            size={20}
+                                            color="#94a3b8"
+                                            label={campo.label}
+                                            placeholder={campo.placeholder}
+                                            keyboardType={campo.keyboardType}
+                                            secureTextEntry={campo.secureTextEntry}
+                                            autoComplete={campo.autoComplete}
+                                            autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
+                                            returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
+                                        />
+                                    ))}
+                                </View>
+                            )}
+                        </PageCard>
+                    </Animated.View>
                 </View>
             </ScrollView>
-            <Footer />
         </View>
     )
 }

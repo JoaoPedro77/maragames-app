@@ -2,6 +2,7 @@ import { Pressable, PressableProps, Text, View } from 'react-native';
 import { Icon } from '@/components/Icon';
 import type { MaterialDesignIconsIconName } from '@react-native-vector-icons/material-design-icons';
 import { useRouter, type Href } from 'expo-router';
+import { impactHaptic, selectionHaptic } from '@/lib/haptics';
 
 type ButtonDefaultProps = PressableProps & {
   title?: string;
@@ -47,12 +48,16 @@ export function Button(props: ButtonDefaultProps | ButtonFooterProps | ButtonTab
   }
 }
 
-function ButtonDefault({ title, icon, size, color, darkColor, ...props }: ButtonDefaultProps) {
+function ButtonDefault({ title, icon, size, color, darkColor, onPressIn, ...props }: ButtonDefaultProps) {
   return (
     <Pressable
       accessibilityRole="button"
       className="mt-3 h-14 items-center justify-center rounded-xl bg-red-600 active:bg-red-800"
       {...props}
+      onPressIn={(event) => {
+        if (!props.disabled) impactHaptic();
+        onPressIn?.(event);
+      }}
     >
       <View className="flex-row items-center justify-center gap-2">
         {title && <Text className="text-lg font-bold text-white">{title}</Text>}
@@ -62,7 +67,7 @@ function ButtonDefault({ title, icon, size, color, darkColor, ...props }: Button
   );
 }
 
-function ButtonFooter({ title, icon, size, color, darkColor, route, ativo = false, ...props }: ButtonFooterProps) {
+function ButtonFooter({ title, icon, size, color, darkColor, route, ativo = false, onPressIn, ...props }: ButtonFooterProps) {
   const router = useRouter()
 
   return (
@@ -75,6 +80,10 @@ function ButtonFooter({ title, icon, size, color, darkColor, route, ativo = fals
           : "h-16 w-1/3 items-center p-3 justify-center rounded-lg bg-red-600 dark:active:bg-red-800"
       }
       {...props}
+      onPressIn={(event) => {
+        if (!props.disabled) selectionHaptic();
+        onPressIn?.(event);
+      }}
     >
       <View className="flex-grow items-center justify-center gap-1.5">
         {icon && (!ativo ? <Icon name={icon} size={size} color={color ?? "white"} darkColor={darkColor} /> : <Icon name={icon} size={size} color="white" darkColor={darkColor ?? color} />)}
@@ -84,7 +93,7 @@ function ButtonFooter({ title, icon, size, color, darkColor, route, ativo = fals
   );
 }
 
-function ButtonTabs({ title, icon, size, color, darkColor, ativo = false, ...props }: ButtonTabsProps) {
+function ButtonTabs({ title, icon, size, color, darkColor, ativo = false, onPressIn, ...props }: ButtonTabsProps) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -94,6 +103,10 @@ function ButtonTabs({ title, icon, size, color, darkColor, ativo = false, ...pro
           : "items-center w-full h-full justify-center rounded-xl bg-red-600 active:bg-red-800"
       }
       {...props}
+      onPressIn={(event) => {
+        if (!props.disabled) selectionHaptic();
+        onPressIn?.(event);
+      }}
     >
       <View className="flex-row items-center justify-center gap-2">
         {icon && (!ativo ? <Icon name={icon} size={size} color={color ?? "white"} darkColor={darkColor} /> : <Icon name={icon} size={size} color="white" darkColor={darkColor ?? color} />)}

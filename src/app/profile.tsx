@@ -1,7 +1,5 @@
 import { GradientText } from '@/components/GradientText';
 import { Card } from '@/components/Card';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { PageCard } from '@/components/PageCard';
 import { View, Text, Image, ScrollView } from 'react-native';
 
@@ -30,9 +28,7 @@ export default function Profile() {
   ];
 
   return (
-    <View className="flex h-full bg-white dark:bg-slate-900 mb-11">
-      <Header/>
-
+    <View className="flex h-full bg-white dark:bg-slate-900">
       <ScrollView
         className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
         showsVerticalScrollIndicator={false}
@@ -90,7 +86,6 @@ export default function Profile() {
           ))}
         </View>
       </ScrollView >
-      <Footer />
     </View>
   );
 }

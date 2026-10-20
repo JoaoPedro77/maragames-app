@@ -1,6 +1,4 @@
 import { Card } from '@/components/Card';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { useRouter } from 'expo-router';
 import { ScrollView, View, Text } from 'react-native';
 import { Icon } from '@/components/Icon';
@@ -28,9 +26,6 @@ export default function Rank() {
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <Header onPress={() => 
-                router.back()
-            }/>
             <ScrollView
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
@@ -61,7 +56,6 @@ export default function Rank() {
                 ))}
                 <View className='mb-10' />
             </ScrollView>
-            <Footer />
         </View>
     )
 }

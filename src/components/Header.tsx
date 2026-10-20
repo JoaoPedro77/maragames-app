@@ -1,7 +1,6 @@
 import { View, Text, Image } from 'react-native'
 import { Button } from './Button'
 import { usePathname, useRouter } from 'expo-router'
-import { useState } from 'react'
 
 export function Header(props: any): any {
     const router = useRouter()

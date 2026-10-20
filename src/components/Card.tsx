@@ -35,7 +35,7 @@ export function RankCard(props: RankProps) {
 
     const baseClasses = props.rank === 1
         ? 'flex-row justify-between items-center w-full dark:border-2 dark:border-violet-700 border-2 border-violet-700 rounded-xl p-4'
-        : 'flex-row justify-between items-center w-full bg-slate-50 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-4'
+        : 'flex-row justify-between items-center w-full border border-slate-300 dark:border-slate-700 rounded-xl p-4'
 
     const textClasses = props.rank === 1
         ? 'dark:bg-violet-700 bg-violet-700 text-white'

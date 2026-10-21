@@ -23,7 +23,7 @@ export function Input({ label, icon, size, color, darkColor, ...props }: InputPr
 
       <TextInput
         accessibilityLabel={label}
-        className="h-14 rounded-xl border border-slate-300 bg-slate-50 px-4 text-lg text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+        className="h-14 rounded-xl border border-slate-300 bg-slate-50 px-4 text-lg text-slate-900 dark:border-slate-700 dark:bg-slate-700/50 dark:text-white"
         placeholderTextColor="#64748b"
         {...props}
       />

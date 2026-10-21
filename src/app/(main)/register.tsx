@@ -1,11 +1,8 @@
-import { useRouter } from "expo-router"
-import { Header } from "@/components/Header"
-import { Footer } from "@/components/Footer"
 import { Button } from "@/components/Button"
 import { View, ScrollView, Text, TextInputProps } from "react-native"
 import { useState } from "react"
 import { Input } from "@/components/Input"
-import { Icon } from "@/components/Icon"
+import { PageCard } from "@/components/PageCard"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 
 type Campo = {
@@ -28,7 +25,7 @@ type Aba = {
 
 const abas: Aba[] = [
     {
-        id: "instituicao", title: "+ Instituição", icon: "bank",
+        id: "instituicao", title: "Instituição", icon: "bank",
         campos: [
             { label: "Nome da Instituição", icon: "bank", keyboardType: "default", placeholder: "Ex: Colégio Maragames" },
             { label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email" },
@@ -37,7 +34,7 @@ const abas: Aba[] = [
         ]
     },
     {
-        id: "gestor", title: "+ Gestor", icon: "account-tie",
+        id: "gestor", title: "Gestor", icon: "account-tie",
         campos: [
             { label: "Nome do Gestor", icon: "account-tie", keyboardType: "default", placeholder: "Ex: Maria Souza" },
             { label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição" },
@@ -46,7 +43,7 @@ const abas: Aba[] = [
         ]
     },
     {
-        id: "aluno", title: "+ Aluno", icon: "account-school",
+        id: "aluno", title: "Aluno", icon: "account-school",
         campos: [
             { label: "Nome do Aluno", icon: "account-school", keyboardType: "default", placeholder: "Ex: Maria Souza" },
             { label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição" },
@@ -58,23 +55,20 @@ const abas: Aba[] = [
 
 export default function Cadastro() {
     const [abaAtiva, setAbaAtiva] = useState<AbaId>("instituicao")
-    const router = useRouter()
-
-    function routeBack() {
-        router.back()
-    }
 
     const abaAtivaInfo = abas.find((aba) => aba.id === abaAtiva)
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <Header onPress={routeBack} icon="arrow-left" size={27} />
             <ScrollView
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
                 <View className="flex-grow gap-5">
-                    <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-full">
+                    <Text className="text-lg leading-6 text-slate-600 dark:text-slate-400">
+                        Selecione o tipo de cadastro:
+                    </Text>
+                    <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-xl">
                         {abas.map((aba) => (
                             <View key={aba.id} className="w-1/3">
                                 <Button
@@ -90,35 +84,36 @@ export default function Cadastro() {
                             </View>
                         ))}
                     </View>
-                    <View className="flex-grow p-5 bg-slate-100 dark:bg-[#142134] border border-slate-300 dark:border-slate-700 rounded-2xl w-full">
-                        <Text className="text-xl font-bold dark:text-purple-100 mb-4">
-                            <Icon name="form-select" size={22} color='#647082' darkColor='#b5bcc7' /> CADASTRAR{" "}
-                            {abaAtivaInfo?.title.replace("+ ", "").toUpperCase()}
-                        </Text>
-                        {abaAtivaInfo && (
-                            <View key={abaAtiva} className="flex-grow gap-5">
-                                {abaAtivaInfo.campos.map((campo, index) => (
-                                    <Input
-                                        key={campo.label}
-                                        icon={campo.icon}
-                                        size={20}
-                                        color="#94a3b8"
-                                        label={campo.label}
-                                        placeholder={campo.placeholder}
-                                        keyboardType={campo.keyboardType}
-                                        secureTextEntry={campo.secureTextEntry}
-                                        autoComplete={campo.autoComplete}
-                                        autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
-                                        returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
-                                    />
-                                ))}
-                                <Button typeButton="default" title="Confirmar" icon="check"/>
-                            </View>
-                        )}
+                    <View key={abaAtiva} className="bg-white dark:bg-slate-900">
+                        <PageCard
+                            title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
+                            icon="form-select"
+                            footer={<Button typeButton="default" title="Confirmar" icon="check" />}
+                            footerClassName="mt-5"
+                        >
+                            {abaAtivaInfo && (
+                                <View className="flex-grow gap-5">
+                                    {abaAtivaInfo.campos.map((campo, index) => (
+                                        <Input
+                                            key={campo.label}
+                                            icon={campo.icon}
+                                            size={20}
+                                            color="#94a3b8"
+                                            label={campo.label}
+                                            placeholder={campo.placeholder}
+                                            keyboardType={campo.keyboardType}
+                                            secureTextEntry={campo.secureTextEntry}
+                                            autoComplete={campo.autoComplete}
+                                            autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
+                                            returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
+                                        />
+                                    ))}
+                                </View>
+                            )}
+                        </PageCard>
                     </View>
                 </View>
             </ScrollView>
-            <Footer />
         </View>
     )
 }

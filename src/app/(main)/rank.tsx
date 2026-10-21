@@ -1,8 +1,7 @@
 import { Card } from '@/components/Card';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { useRouter } from 'expo-router';
 import { ScrollView, View, Text } from 'react-native';
+import { Icon } from '@/components/Icon';
 
 const usuarios = [
     { id: 1, nome: 'Rafael Almeida', xp: 28450, nivel: 15, rank: 1, trilhasConcluidas: 28 },
@@ -27,18 +26,19 @@ export default function Rank() {
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <Header onPress={() => 
-                router.back()
-            }/>
             <ScrollView
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
-                <View className="flex-row justify-between items-end px-1.5">
-                    <Text className='text-xl font-bold dark:text-purple-100 my-1'>
-                        CLASSIFICAÇÃO GERAL
-                    </Text>
-                    <Text className='text-md font-bold dark:text-slate-400 mb-1.5'>
+                <View className="flex-row justify-between items-center pb-2">
+                    <View className='flex-row items-center gap-2'>
+                        <Icon name="trophy" size={20} color="#facc15" darkColor="#facc15" />
+                        <Text className='text-xl font-bold dark:text-slate-200'>
+                            CLASSIFICAÇÃO GERAL
+                        </Text>
+                    </View>
+                    <View/>
+                    <Text className='text-md font-bold dark:text-slate-400'>
                         {usuarios.length} Estudantes
                     </Text>
                 </View>
@@ -56,7 +56,6 @@ export default function Rank() {
                 ))}
                 <View className='mb-10' />
             </ScrollView>
-            <Footer />
         </View>
     )
 }

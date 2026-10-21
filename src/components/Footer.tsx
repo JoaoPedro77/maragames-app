@@ -6,9 +6,9 @@ import { usePathname } from "expo-router";
 import type { Href } from "expo-router";
 
 const buttons = [
-    { title: 'Cadastrar', size: 22, icon: 'account-plus' as MaterialDesignIconsIconName, route: "/register" as Href },
-    { title: 'Instituição', size: 22, icon: 'bank' as MaterialDesignIconsIconName, route: "/institutions" as Href },
-    { title: 'Alunos', size: 22, icon: 'account-school' as MaterialDesignIconsIconName, route: "/rank" as Href }
+    { title: 'Cadastrar', size: 22, icon: 'account-plus' as MaterialDesignIconsIconName, route: "/register" as Href},
+    { title: 'Instituição', size: 22, icon: 'bank' as MaterialDesignIconsIconName, route: "/institutions" as Href, match: ['institution', '/managers']},
+    { title: 'Alunos', size: 22, icon: 'account-school' as MaterialDesignIconsIconName, route: "/rank" as Href,  match: ['/profile']}
 ]
 
 export function Footer() {
@@ -16,9 +16,9 @@ export function Footer() {
 
     return (
         <View className='w-full px-6'>
-            <View className='border-hairline border-slate-600' />
-            <View className="w-full flex-row justify-between items-center bg-slate-900 h-24">
-                <View className="w-full flex-row justify-between items-center rounded-xl bg-slate-800">
+            <View className="dark:bg-slate-700 h-[1px]"/>
+            <View className="w-full flex-row justify-between items-center bg-white dark:bg-slate-900 h-28">
+                <View className="w-full flex-row justify-between items-center rounded-xl bg-slate-100 dark:bg-slate-800">
                     {buttons.map((button, index) => (
                         <Button
                             typeButton="footer"
@@ -26,8 +26,10 @@ export function Footer() {
                             title={button.title}
                             size={button.size}
                             icon={button.icon}
+                            color='#334155' 
+                            darkColor='white'
                             route={button.route}
-                            ativo={pathname === button.route}
+                            ativo={pathname === button.route || button.match?.includes(pathname)}
                         />
                     ))}
                 </View>

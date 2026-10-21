@@ -8,13 +8,14 @@ type InputProps = TextInputProps & {
   icon?: MaterialDesignIconsIconName;
   size?: number;
   color?: string;
+  darkColor?: string;
 };
 
-export function Input({ label, icon, size, color, ...props }: InputProps) {
+export function Input({ label, icon, size, color, darkColor, ...props }: InputProps) {
   return (
     <View>
       <View className="flex-row items-center gap-2 mb-1 mx-1">
-        {icon && <Icon name={icon} size={size} color={color || "white"} />}
+        {icon && <Icon name={icon} size={size} color={color || "white"} darkColor={darkColor} />}
         <Text className="text-lg font-semibold text-slate-700 dark:text-slate-400">
           {label}
         </Text>
@@ -22,7 +23,7 @@ export function Input({ label, icon, size, color, ...props }: InputProps) {
 
       <TextInput
         accessibilityLabel={label}
-        className="h-14 rounded-xl border border-slate-300 bg-slate-50 px-4 text-lg text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+        className="h-14 rounded-xl border border-slate-300 bg-slate-50 px-4 text-lg text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
         placeholderTextColor="#64748b"
         {...props}
       />

@@ -1,5 +1,6 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import { View, Text, Pressable } from 'react-native'
+import { GradientText } from "./GradientText";
 
 type DiscenteProps = {
     id?: number;
@@ -33,8 +34,8 @@ export function RankCard(props: RankProps) {
     const [pressed, setPressed] = useState(false)
 
     const baseClasses = props.rank === 1
-        ? 'flex-row justify-between items-center w-full dark:border dark:border-purple-700 shadow-md shadow-slate-500 dark:shadow-slate-900 rounded-xl p-4'
-        : 'flex-row justify-between items-center w-full dark:border dark:border-slate-700 shadow-md shadow-slate-500 dark:shadow-slate-900 rounded-xl p-4'
+        ? 'flex-row justify-between items-center w-full dark:border-2 dark:border-violet-700 border-2 border-[#3a2681] rounded-xl p-4'
+        : 'flex-row justify-between items-center w-full bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 rounded-xl p-4'
 
     const bgClasses = pressed
         ? 'bg-slate-300 dark:bg-slate-600'
@@ -54,16 +55,29 @@ export function RankCard(props: RankProps) {
                         {props.rank >= 10 ? props.rank : '0' + props.rank}
                     </Text>
 
-                    <View className='bg-slate-100 dark:bg-slate-700 rounded-full w-12 h-12 items-center justify-center'>
-                        <Text className="text-slate-600 dark:text-slate-300 text-lg font-bold">
-                            {props.nome[0]}
-                        </Text>
+                    <View className='bg-slate-300 dark:bg-slate-700 rounded-full w-12 h-12 items-center justify-center'>
+                        {
+                            props.rank === 1
+                                ? <GradientText className="text-2xl font-bold">
+                                    {props.nome[0]}
+                                </GradientText>
+                                : <Text className="text-slate-800 dark:text-slate-300 text-lg font-bold">
+                                    {props.nome[0]}
+                                </Text>
+                        }
                     </View>
 
                     <View>
-                        <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
-                            {props.nome}
-                        </Text>
+                        {
+                            props.rank === 1
+                                ? <GradientText className="text-lg font-semibold">
+                                    {props.nome}
+                                </GradientText>
+                                : <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
+                                    {props.nome}
+                                </Text>
+                        }
+
 
                         <Text className="font-bold text-slate-400 dark:text-[#bda3ff]">
                             Nível: {props.nivel}
@@ -74,7 +88,7 @@ export function RankCard(props: RankProps) {
                     <Text className="text-red-500 text-xl font-bold ">
                         {props.xp}
                     </Text>
-                    <Text className="text-red-200 text-md font-bold">
+                    <Text className="dark:text-red-200 text-slate-900 text-md font-extrabold">
                         XP
                     </Text>
                 </View>
@@ -84,11 +98,10 @@ export function RankCard(props: RankProps) {
 }
 
 function DiscenteCard(props: DiscenteProps) {
-    
+
     return (
         <View key={props.id} className='flex w-full gap-3 m-1'>
-            <View className='bg-slate-50 flex-row justify-between items-center w-full dark:border
-             dark:border-slate-700 shadow-md shadow-slate-500 dark:shadow-slate-800 dark:bg-slate-800 rounded-xl p-4'>
+            <View className='bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800 flex-row justify-between items-center w-full dark:border rounded-xl p-4'>
                 <View>
                     <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
                         {props.title}

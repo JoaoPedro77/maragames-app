@@ -59,8 +59,7 @@ export default function Profile() {
           </View>
         </View>
 
-        <View className="flex flex-row rounded-xl dark:border dark:border-slate-700 mt-8 
-      bg-slate-50 shadow-md shadow-slate-500 dark:shadow-slate-800 dark:bg-slate-800">
+        <View className="flex flex-row rounded-xl dark:border mt-8 bg-slate-50 border border-slate-200 dark:border-slate-700 dark:bg-slate-800">
           {stats.map((stat, index) => (
             <View key={index} className="flex-grow p-3">
               <View className='flex-grow items-center'>

@@ -12,12 +12,9 @@ export function useLoginController() {
     setInputEmail(inputEmail)
     setInputSenha(inputSenha)
     
-
     if (inputEmail.trim().length === 0 || inputSenha.trim().length === 0) {
       setErroMessage("Preencha todos os campos.")
       setErro(true)
-      setInputEmail('')
-      setInputSenha('')
 
       return
     }
@@ -27,19 +24,24 @@ export function useLoginController() {
       senha: inputSenha
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: usuario.email,
       password: usuario.senha
     })
 
     if (error) {
-      setErroMessage(error.message)
-      setErro(true)
+      
+      if (error.status !== 400) {
+        setErroMessage(error.message)
+      } 
+      else {
+        setErroMessage("Credenciais incorretas, tente novamente.")
+      }
 
+      setErro(true)
       return 
     }
 
-    console.log(`usuario autenticado: ${data}`)
     return 'sucesso'
   }
 

@@ -12,7 +12,7 @@ const BACKGROUND_COLORS = {
   dark: '#0f172a',
 } as const;
 
-const APP_ROUTES = ['/register', '/institutions', '/rank', '/profile', '/managers'];
+const APP_ROUTES = ['/register', '/institutions', '/rank', '/profile', '/managers', '/institution'];
 
 function getBackgroundColor(colorScheme: ColorSchemeName) {
   return colorScheme === 'dark' ? BACKGROUND_COLORS.dark : BACKGROUND_COLORS.light;

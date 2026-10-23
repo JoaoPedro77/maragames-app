@@ -139,7 +139,7 @@ export default function ManagersScreen() {
               <PageCard className="py-8 items-center justify-center">
                 <Icon name="account-search-outline" size={32} color="#94a3b8" />
                 <Text className="text-slate-500 dark:text-slate-400 text-center font-medium mt-2">
-                  Nenhum gestor encontrado para "{search}".
+                  Nenhum gestor encontrado para &quot;{search}&quot;.
                 </Text>
               </PageCard>
             ) : (

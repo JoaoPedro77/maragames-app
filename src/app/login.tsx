@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLoginController } from '@/controllers/loginController';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -20,11 +21,30 @@ export default function LoginScreen() {
     router.replace('/rank');
   }
 
+  const {
+    erro,
+    erroMessage,
+    inputEmail,
+    setInputEmail,
+    inputSenha,
+    setInputSenha,
+    login,
+  } = useLoginController()
+
+  async function handleSubmit() {
+    const resultado = await login()
+
+    if (resultado === 'sucesso') {
+      handleLogin()
+    }
+
+    return
+  }
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-slate-900">
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
       >
         <ScrollView
           className="flex-1"
@@ -51,9 +71,11 @@ export default function LoginScreen() {
 
           <View className="gap-5">
             <Input
-            icon="email-outline"
-            size={20}
-            color="#94a3b8"
+              value={inputEmail}
+              onChangeText={setInputEmail}
+              icon="email-outline"
+              size={20}
+              color="#94a3b8"
               label="E-mail"
               autoCapitalize="none"
               autoComplete="email"
@@ -63,18 +85,22 @@ export default function LoginScreen() {
             />
 
             <Input
-            icon="key-outline"
-            size={18.5}
-            color="#94a3b8"
+              value={inputSenha}
+              onChangeText={setInputSenha}
+              icon="key-outline"
+              size={18.5}
+              color="#94a3b8"
               label="Senha"
               autoComplete="current-password"
-              onSubmitEditing={handleLogin}
+              autoCapitalize='none'
               placeholder="Digite sua senha"
               returnKeyType="done"
               secureTextEntry
             />
 
-            <Button typeButton='default' title="Entrar" icon='login-variant' size={20} onPress={handleLogin} />
+            {erro && <Text className='text-red-500 text-md font-semibold'>{erroMessage}</Text>}
+
+            <Button typeButton='default' title="Entrar" icon='login-variant' size={20} onPress={handleSubmit} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

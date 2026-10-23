@@ -2,6 +2,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
+import { OngoingTracks } from '@/components/OngoingTracks';
 
 export default function InstitutionScreen() {
   return (
@@ -55,6 +56,7 @@ export default function InstitutionScreen() {
         </View>
       </View>
       <WeeklyEngagement />
+      <OngoingTracks />
     </ScrollView>
   );
 }

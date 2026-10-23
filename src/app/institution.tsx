@@ -1,5 +1,6 @@
 import { ScrollView, Text, View } from 'react-native';
 import { Icon } from '@/components/Icon';
+import { MetricCard } from '@/components/MetricCard';
 
 export default function InstitutionScreen() {
   return (
@@ -31,6 +32,25 @@ export default function InstitutionScreen() {
             <View className="h-1.5 w-1.5 rounded-full bg-emerald-700 dark:bg-emerald-400" />
             <Text className="text-xs font-bold text-emerald-700 dark:text-emerald-400">Ativa</Text>
           </View>
+        </View>
+      </View>
+      <View className="gap-3">
+        <View className="flex-row flex-wrap items-center justify-between gap-2">
+          <Text className="text-base font-bold text-slate-700 dark:text-slate-300">
+            Métricas Gerais da Turma
+          </Text>
+          <Text className="text-xs font-bold text-violet-700 dark:text-violet-300">
+            Tempo Real
+          </Text>
+        </View>
+
+        <View className="flex-row items-stretch gap-3">
+          <MetricCard title="Alunos Ativos" value="142" suffix="/ 150" icon="account-group-outline" />
+          <MetricCard title="Trilhas Concluídas" value="4" icon="check-circle-outline" highlighted />
+        </View>
+        <View className="flex-row items-stretch gap-3">
+          <MetricCard title="Nível Médio" value="Nvl 7.4" icon="medal-outline" progress={74} />
+          <MetricCard title="Taxa de Acerto" value="78.5%" icon="chart-pie" />
         </View>
       </View>
     </ScrollView>

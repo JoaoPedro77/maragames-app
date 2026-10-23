@@ -1,6 +1,7 @@
 import { ScrollView, Text, View } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { MetricCard } from '@/components/MetricCard';
+import { WeeklyEngagement } from '@/components/WeeklyEngagement';
 
 export default function InstitutionScreen() {
   return (
@@ -53,6 +54,7 @@ export default function InstitutionScreen() {
           <MetricCard title="Taxa de Acerto" value="78.5%" icon="chart-pie" />
         </View>
       </View>
+      <WeeklyEngagement />
     </ScrollView>
   );
 }

@@ -7,7 +7,7 @@ import type { Href } from "expo-router";
 
 const buttons = [
     { title: 'Cadastros', size: 22, icon: 'account-plus' as MaterialDesignIconsIconName, route: "/register" as Href},
-    { title: 'Instituições', size: 22, icon: 'bank' as MaterialDesignIconsIconName, route: "/institutions" as Href, match: ['institution', '/managers']},
+    { title: 'Instituições', size: 22, icon: 'bank' as MaterialDesignIconsIconName, route: "/institutions" as Href, match: ['/institution', '/managers']},
     { title: 'Alunos', size: 22, icon: 'account-school' as MaterialDesignIconsIconName, route: "/rank" as Href,  match: ['/profile']}
 ]
 

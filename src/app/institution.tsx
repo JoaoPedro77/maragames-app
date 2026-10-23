@@ -1,4 +1,5 @@
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Link } from 'expo-router';
 import { Icon } from '@/components/Icon';
 import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
@@ -16,7 +17,7 @@ export default function InstitutionScreen() {
         Visão do Gestor
       </Text>
 
-      <View className="rounded-xl border border-slate-300 bg-slate-100 p-4 dark:border-slate-700 dark:bg-slate-800">
+      <View className="gap-3 rounded-xl border border-slate-300 bg-slate-100 p-4 dark:border-slate-700 dark:bg-slate-800">
         <View className="flex-row items-center gap-3">
           <View className="h-10 w-10 items-center justify-center rounded-xl bg-[#4918c8]">
             <Icon name="bank-outline" size={24} color="#cabeff" />
@@ -35,6 +36,35 @@ export default function InstitutionScreen() {
             <View className="h-1.5 w-1.5 rounded-full bg-emerald-700 dark:bg-emerald-400" />
             <Text className="text-xs font-bold text-emerald-700 dark:text-emerald-400">Ativa</Text>
           </View>
+        </View>
+        <View className="flex-row gap-2 border-t border-slate-300 pt-3 dark:border-slate-700">
+          <Link href="/rank" asChild>
+            <Pressable
+              accessibilityRole="link"
+              className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-slate-300 p-2 active:bg-violet-100 dark:border-slate-700 dark:active:bg-slate-700"
+            >
+              <View className="h-8 w-8 items-center justify-center rounded-lg bg-violet-100 dark:bg-violet-300/10">
+                <Icon name="school-outline" size={20} color="#6d28d9" darkColor="#cabeff" />
+              </View>
+              <Text className="flex-1 text-xs font-bold text-slate-700 dark:text-slate-300">
+                Ver Alunos
+              </Text>
+            </Pressable>
+          </Link>
+          <Pressable
+            disabled
+            accessibilityRole="button"
+            accessibilityState={{ disabled: true }}
+            accessibilityLabel="Ver Gestores, indisponível"
+            className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-slate-300 p-2 opacity-50 dark:border-slate-700"
+          >
+            <View className="h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-400/10">
+              <Icon name="badge-account-horizontal-outline" size={20} color="#1d4ed8" darkColor="#adc6ff" />
+            </View>
+            <Text className="flex-1 text-xs font-bold text-slate-700 dark:text-slate-300">
+              Ver Gestores
+            </Text>
+          </Pressable>
         </View>
       </View>
       <View className="gap-3">

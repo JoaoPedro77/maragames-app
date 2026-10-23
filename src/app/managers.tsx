@@ -56,10 +56,18 @@ export default function ManagersScreen() {
               value={search}
               onChangeText={setSearch}
             />
-            <View className="flex-row gap-2">
+            <View className="flex-row">
+              <View className="rounded-lg bg-indigo-600 px-3 py-1.5 flex-row items-center gap-2">
+                <Text className="font-bold text-white">Todos</Text>
+                <View className="bg-white/20 rounded-full px-2 py-0.5">
+                  <Text className="text-xs font-bold text-white">{institutionInfo.totalGestores}</Text>
+                </View>
+              </View>
+            </View>
+            <View className="gap-">
               {mockGestores.map((gestor) => (
                 <PageCard key={gestor.id} contentClassName= "gap-3">
-                  <View className="flex-row justify-between items-start">
+                  <View className="flex-row justify-between items-center">
                     <View className="flex-row gap-3 flex-1">
                       <View className="relative">
                         <View className="h-14 w-14 items-center justify-center rounded-xl bg-violet-600 dark:bg-violet-700">
@@ -70,12 +78,13 @@ export default function ManagersScreen() {
                             gestor.status === 'Ativo' ? 'bg-emerald-500' : 'bg-amber-500'
                           }`} 
                         />
+                          
                       </View>
                       <View className= "flex-1 justify-center">
                         <View className= "flex-row items-center justify-between">
                           <Text className="text-lg font-bold dark:text-slate-100" numberOfLines={1}> {gestor.nome}</Text>
                           <Icon name="dots-vertical" size={20} color="#94a3b8" />
-                        </View>
+                        </View>                      
                         <Text className="text-sm font-semibold text-indigo-500 dark:text-indigo-400 mt-0.5">{gestor.cargo}</Text>
                         <View className="flex-row items-center gap-1 mt-1">
                           <Icon name="email-outline" size={14} color="#94a3b8" />
@@ -84,20 +93,17 @@ export default function ManagersScreen() {
                       </View>
                     </View>
                   </View>
+                  <Button
+                    typeButton="default"
+                    title="Vincular Novo Gestor"
+                    onPress={() => {}}
+                  />
                 </PageCard>
               ))}
-            </View>
-
-            <View className="flex-row">
-              <View className="rounded-lg bg-indigo-600 px-3 py-1.5 flex-row items-center gap-2">
-                <Text className="font-bold text-white">Todos</Text>
-                <View className="bg-white/20 rounded-full px-2 py-0.5">
-                  <Text className="text-xs font-bold text-white">{institutionInfo.totalGestores}</Text>
+          </View>
+            
                 </View>
               </View>
-            </View>
-          </View>
-        </View>
       </ScrollView>
     </View>
   );

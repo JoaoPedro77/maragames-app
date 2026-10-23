@@ -11,7 +11,7 @@ export function useLoginController() {
   async function login() {
     setInputEmail(inputEmail)
     setInputSenha(inputSenha)
-    
+
     if (inputEmail.trim().length === 0 || inputSenha.trim().length === 0) {
       setErroMessage("Preencha todos os campos.")
       setErro(true)
@@ -30,16 +30,16 @@ export function useLoginController() {
     })
 
     if (error) {
-      
+
       if (error.status !== 400) {
         setErroMessage(error.message)
-      } 
+      }
       else {
         setErroMessage("Credenciais incorretas, tente novamente.")
       }
 
       setErro(true)
-      return 
+      return
     }
 
     return 'sucesso'

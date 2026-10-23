@@ -36,9 +36,9 @@ const instituicoes: Instituicao[] = [
 export default function Cadastro() {
     const router = useRouter()
     return (
-        <View className="bg-white dark:bg-slate-900">
+        <View className="flex-1 bg-white dark:bg-slate-900">
             <ScrollView
-                className="bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
+                className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
                 <View className="gap-5">
@@ -73,10 +73,7 @@ export default function Cadastro() {
                         </Text>
                         <View className="gap-3">
                             {instituicoes.map((inst) => (
-                                <PageCard
-                                    key={inst.nome}
-                                    contentClassName="flex-col"
-                                >
+                                <PageCard key={inst.nome} contentClassName="flex-col">
                                     <View className="flex-row justify-between items-center">
                                         <View className="flex-col gap-1">
                                             <Text className="text-xl font-extrabold dark:text-slate-100 max-w-40">
@@ -92,10 +89,18 @@ export default function Cadastro() {
                                         </View>
                                     </View>
                                     <View>
-                                        <Button className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-500 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
+                                        <Button
+                                            className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-500 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
                                             typeButton="default"
                                             title="Detalhes"
-                                            onPress={() => router.push('/institution')}
+                                            onPress={() => router.push({
+                                                pathname: '/institution',
+                                                params: {
+                                                    nome: inst.nome,
+                                                    tipo: inst.tipo,
+                                                    gestoresCount: String(inst.gestores),
+                                                },
+                                            })}
                                             icon='information-slab-circle-outline'
                                             size={18}
                                         />

@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 import { Icon } from '@/components/Icon';
 import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
@@ -7,6 +7,14 @@ import { OngoingTracks } from '@/components/OngoingTracks';
 import { ClassRanking } from '@/components/ClassRanking';
 
 export default function InstitutionScreen() {
+  const params = useLocalSearchParams<{
+    nome?: string;
+    tipo?: string;
+    gestoresCount?: string;
+  }>();
+  const nome = params.nome || 'Escola Alpha - Polo Central';
+  const tipo = params.tipo || 'Escola';
+
   return (
     <ScrollView
       className="flex-1 bg-white dark:bg-slate-900"
@@ -25,10 +33,10 @@ export default function InstitutionScreen() {
 
           <View className="flex-1 gap-1">
             <Text className="text-xs font-bold uppercase text-violet-700 dark:text-violet-300">
-              Instituição de ensino
+              {params.tipo || 'Instituição de ensino'}
             </Text>
             <Text className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
-              Escola Alpha - Polo Central
+              {nome}
             </Text>
           </View>
 
@@ -51,20 +59,25 @@ export default function InstitutionScreen() {
               </Text>
             </Pressable>
           </Link>
-          <Pressable
-            disabled
-            accessibilityRole="button"
-            accessibilityState={{ disabled: true }}
-            accessibilityLabel="Ver Gestores, indisponível"
-            className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-slate-300 p-2 opacity-50 dark:border-slate-700"
+          <Link
+            href={{
+              pathname: '/managers',
+              params: { nome, tipo, gestoresCount: params.gestoresCount },
+            }}
+            asChild
           >
-            <View className="h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-400/10">
-              <Icon name="badge-account-horizontal-outline" size={20} color="#1d4ed8" darkColor="#adc6ff" />
-            </View>
-            <Text className="flex-1 text-xs font-bold text-slate-700 dark:text-slate-300">
-              Ver Gestores
-            </Text>
-          </Pressable>
+            <Pressable
+              accessibilityRole="link"
+              className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-slate-300 p-2 active:bg-violet-100 dark:border-slate-700 dark:active:bg-slate-700"
+            >
+              <View className="h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-400/10">
+                <Icon name="badge-account-horizontal-outline" size={20} color="#1d4ed8" darkColor="#adc6ff" />
+              </View>
+              <Text className="flex-1 text-xs font-bold text-slate-700 dark:text-slate-300">
+                Ver Gestores
+              </Text>
+            </Pressable>
+          </Link>
         </View>
       </View>
       <View className="gap-3">

@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button"
-import { View, ScrollView, Text, TextInputProps } from "react-native"
+import { View, ScrollView, Text, TextInputProps, KeyboardAvoidingView, Platform } from "react-native"
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from "react"
 import { Input } from "@/components/Input"
 import { PageCard } from "@/components/PageCard"
@@ -60,60 +61,65 @@ export default function Cadastro() {
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
-            <ScrollView
-                className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
-                showsVerticalScrollIndicator={false}
+            <KeyboardAvoidingView
+                className="flex-1"
+                behavior={Platform.OS === 'ios' ? 'padding' : "padding"}
             >
-                <View className="flex-grow gap-5">
-                    <Text className="text-lg leading-6 text-slate-600 dark:text-slate-400">
-                        Selecione o tipo de cadastro:
-                    </Text>
-                    <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-xl">
-                        {abas.map((aba) => (
-                            <View key={aba.id} className="w-1/3">
-                                <Button
-                                    typeButton="tabs"
-                                    title={aba.title}
-                                    color='#334155'
-                                    darkColor='white'
-                                    icon={aba.icon}
-                                    size={15}
-                                    ativo={abaAtiva === aba.id}
-                                    onPress={() => setAbaAtiva(aba.id)}
-                                />
-                            </View>
-                        ))}
-                    </View>
-                    <View key={abaAtiva} className="bg-white dark:bg-slate-900">
-                        <PageCard
-                            title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
-                            icon="form-select"
-                            footer={<Button typeButton="default" title="Confirmar" icon="check" />}
-                            footerClassName="mt-5"
-                        >
-                            {abaAtivaInfo && (
-                                <View className="flex-grow gap-5">
-                                    {abaAtivaInfo.campos.map((campo, index) => (
-                                        <Input
-                                            key={campo.label}
-                                            icon={campo.icon}
-                                            size={20}
-                                            color="#94a3b8"
-                                            label={campo.label}
-                                            placeholder={campo.placeholder}
-                                            keyboardType={campo.keyboardType}
-                                            secureTextEntry={campo.secureTextEntry}
-                                            autoComplete={campo.autoComplete}
-                                            autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
-                                            returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
-                                        />
-                                    ))}
+                <ScrollView
+                    className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View className="flex-grow gap-5">
+                        <Text className="text-lg leading-6 text-slate-600 dark:text-slate-400">
+                            Selecione o tipo de cadastro:
+                        </Text>
+                        <View className="flex-row h-10 justify-between bg-slate-100 dark:bg-slate-800 rounded-xl">
+                            {abas.map((aba) => (
+                                <View key={aba.id} className="w-1/3">
+                                    <Button
+                                        typeButton="tabs"
+                                        title={aba.title}
+                                        color='#334155'
+                                        darkColor='white'
+                                        icon={aba.icon}
+                                        size={15}
+                                        ativo={abaAtiva === aba.id}
+                                        onPress={() => setAbaAtiva(aba.id)}
+                                    />
                                 </View>
-                            )}
-                        </PageCard>
+                            ))}
+                        </View>
+                        <View key={abaAtiva} className="bg-white dark:bg-slate-900">
+                            <PageCard
+                                title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
+                                icon="form-select"
+                                footer={<Button typeButton="default" title="Confirmar" icon="check" />}
+                                footerClassName="mt-5"
+                            >
+                                {abaAtivaInfo && (
+                                    <View className="flex-grow gap-5">
+                                        {abaAtivaInfo.campos.map((campo, index) => (
+                                            <Input
+                                                key={campo.label}
+                                                icon={campo.icon}
+                                                size={20}
+                                                color="#94a3b8"
+                                                label={campo.label}
+                                                placeholder={campo.placeholder}
+                                                keyboardType={campo.keyboardType}
+                                                secureTextEntry={campo.secureTextEntry}
+                                                autoComplete={campo.autoComplete}
+                                                autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
+                                                returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
+                                            />
+                                        ))}
+                                    </View>
+                                )}
+                            </PageCard>
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </View>
     )
 }

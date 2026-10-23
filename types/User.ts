@@ -1,24 +1,23 @@
-export type Instituicao = {
-    id: number
-    nome: string
+export interface Usuario {
     email: string
+    senha: string
+}
+
+export interface Instituicao extends Usuario {
+    id?: number
+    nome: string
     tipo: string
 }
 
-export type GestorInstituicao = {
-    id: number
-    instituicao_id: number
+export interface GestorInstituicao extends Usuario {
+    id?: number
+    instituicao_id?: number
     nome: string
-    email: string
-    senha: string
 }
 
-export type AlunoInstituicao = {
-    id: number
-    instituicao_id: number
-    nome: string
-    email: string
-    senha: string
+export interface AlunoInstituicao extends Usuario {
+    id?: number
+    instituicao_id?: number
     xp: number
     nivel: number
     posicao_ranking: number | null

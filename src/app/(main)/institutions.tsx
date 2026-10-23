@@ -4,6 +4,7 @@ import { Icon } from "@/components/Icon"
 import { PageCard } from "@/components/PageCard"
 import { Badge } from "@/components/Badge"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
+import { useRouter } from "expo-router"
 
 type Dado = {
     icon: MaterialDesignIconsIconName
@@ -33,6 +34,7 @@ const instituicoes: Instituicao[] = [
 ]
 
 export default function Cadastro() {
+    const router = useRouter()
     return (
         <View className="bg-white dark:bg-slate-900">
             <ScrollView
@@ -93,6 +95,7 @@ export default function Cadastro() {
                                         <Button className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-500 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
                                             typeButton="default"
                                             title="Detalhes"
+                                            onPress={() => router.push('/institution')}
                                             icon='information-slab-circle-outline'
                                             size={18}
                                         />

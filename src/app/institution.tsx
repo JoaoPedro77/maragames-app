@@ -3,6 +3,7 @@ import { Icon } from '@/components/Icon';
 import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
 import { OngoingTracks } from '@/components/OngoingTracks';
+import { ClassRanking } from '@/components/ClassRanking';
 
 export default function InstitutionScreen() {
   return (
@@ -57,6 +58,7 @@ export default function InstitutionScreen() {
       </View>
       <WeeklyEngagement />
       <OngoingTracks />
+      <ClassRanking />
     </ScrollView>
   );
 }

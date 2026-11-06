@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { supabase, supabaseCadastro } from '@/lib/supabase';
 import type {
   AlunoInstituicao,
   CadastroResult,
@@ -9,6 +10,17 @@ import type {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const SENHA_MIN_LENGTH = 6
+
+const COLUNAS_INSTITUICAO = 'id, nome, email, tipo'
+const COLUNAS_GESTOR = 'id, instituicao_id, nome, email'
+const COLUNAS_ALUNO =
+  'id, instituicao_id, nome, email, xp, nivel, posicao_ranking, trilhas_completas, trilhas_andamento, duvidas'
+
+export type DadosCadastro = {
+  instituicoes: Instituicao[]
+  gestores: GestorInstituicao[]
+  alunos: AlunoInstituicao[]
+}
 
 export function useRegisterController() {
   const [erro, setErro] = useState(false)
@@ -34,6 +46,80 @@ export function useRegisterController() {
     setErro(true)
 
     return { status: 'erro', message }
+  }
+
+  const carregarDados = useCallback(async (): Promise<DadosCadastro | null> => {
+    const [instituicoesResult, gestoresResult, alunosResult] = await Promise.all([
+      supabase.from('instituicao').select(COLUNAS_INSTITUICAO).order('nome'),
+      supabase.from('gestor_instituicao').select(COLUNAS_GESTOR).order('nome'),
+      supabase.from('aluno_instituicao').select(COLUNAS_ALUNO).order('nome'),
+    ])
+
+    if (instituicoesResult.error || gestoresResult.error || alunosResult.error) {
+      setErroMessage("Não foi possível carregar os dados.")
+      setErro(true)
+
+      return null
+    }
+
+    return {
+      instituicoes: (instituicoesResult.data ?? []) as Instituicao[],
+      gestores: (gestoresResult.data ?? []) as GestorInstituicao[],
+      alunos: (alunosResult.data ?? []) as AlunoInstituicao[],
+    }
+  }, [])
+
+  async function inserirPerfil(
+    role: Role,
+    dados: { nome: string; email: string; tipo: string; instituicaoId: number }
+  ): Promise<CadastroResult> {
+    if (role === 'instituicao') {
+      const { data, error } = await supabase
+        .from('instituicao')
+        .insert({ nome: dados.nome, email: dados.email, tipo: dados.tipo })
+        .select(COLUNAS_INSTITUICAO)
+        .single()
+
+      if (error || !data) {
+        return falhar("Não foi possível concluir o cadastro. Tente novamente.")
+      }
+
+      return { status: 'sucesso', role, usuario: data as Instituicao }
+    }
+
+    if (role === 'gestor') {
+      const { data, error } = await supabase
+        .from('gestor_instituicao')
+        .insert({
+          nome: dados.nome,
+          email: dados.email,
+          instituicao_id: dados.instituicaoId,
+        })
+        .select(COLUNAS_GESTOR)
+        .single()
+
+      if (error || !data) {
+        return falhar("Não foi possível concluir o cadastro. Tente novamente.")
+      }
+
+      return { status: 'sucesso', role, usuario: data as GestorInstituicao }
+    }
+
+    const { data, error } = await supabase
+      .from('aluno_instituicao')
+      .insert({
+        nome: dados.nome,
+        email: dados.email,
+        instituicao_id: dados.instituicaoId,
+      })
+      .select(COLUNAS_ALUNO)
+      .single()
+
+    if (error || !data) {
+      return falhar("Não foi possível concluir o cadastro. Tente novamente.")
+    }
+
+    return { status: 'sucesso', role, usuario: data as AlunoInstituicao }
   }
 
   async function cadastrar(role: Role, emailsExistentes: string[] = []): Promise<CadastroResult> {
@@ -75,38 +161,41 @@ export function useRegisterController() {
       return falhar("E-mail já cadastrado.")
     }
 
-    setSucesso(true)
-    setSucessoMessage("Cadastro realizado com sucesso.")
-
-    if (role === 'instituicao') {
-      const usuario: Omit<Instituicao, 'id'> = { nome, email, tipo }
-
-      return { status: 'sucesso', role, usuario }
-    }
-
-    if (role === 'gestor') {
-      const usuario: Omit<GestorInstituicao, 'id'> = {
-        nome,
+    try {
+      const { data: authData, error: authError } = await supabaseCadastro.auth.signUp({
         email,
-        instituicao_id: instituicaoId,
+        password: senha,
+      })
+
+      const mensagemAuth = authError?.message.toLowerCase() ?? ''
+      const identidadesVazias = authData?.user?.identities?.length === 0
+      const erroDuplicado = authError?.status === 422 || mensagemAuth.includes('already registered')
+
+      if (erroDuplicado || identidadesVazias) {
+        return falhar("E-mail já cadastrado.")
       }
 
-      return { status: 'sucesso', role, usuario }
-    }
+      if (authError || !authData?.user) {
+        return falhar(authError?.message ?? "Não foi possível realizar o cadastro. Tente novamente.")
+      }
 
-    const usuario: Omit<AlunoInstituicao, 'id'> = {
-      nome,
-      email,
-      instituicao_id: instituicaoId,
-      xp: 0,
-      nivel: 1,
-      posicao_ranking: null,
-      trilhas_completas: 0,
-      trilhas_andamento: 0,
-      duvidas: null,
-    }
+      const result = await inserirPerfil(role, { nome, email, tipo, instituicaoId })
 
-    return { status: 'sucesso', role, usuario }
+      await supabaseCadastro.auth.signOut().catch(() => undefined)
+
+      if (result.status === 'erro') {
+        return result
+      }
+
+      setSucesso(true)
+      setSucessoMessage("Cadastro realizado com sucesso.")
+
+      return result
+    } catch {
+      await supabaseCadastro.auth.signOut().catch(() => undefined)
+
+      return falhar("Não foi possível conectar. Tente novamente.")
+    }
   }
 
   return {
@@ -125,6 +214,7 @@ export function useRegisterController() {
     inputInstituicaoId,
     setInputInstituicaoId,
     cadastrar,
+    carregarDados,
     limparFormulario,
   }
 }

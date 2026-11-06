@@ -32,21 +32,8 @@ export interface AlunoInstituicao {
 
 export type Role = 'instituicao' | 'gestor' | 'aluno'
 
-export type CadastroInput = {
-    role: Role
-    nome: string
-    email: string
-    senha: string
-    tipo?: string
-    instituicaoId?: number
-}
-
-export type NovaInstituicao = Omit<Instituicao, 'id'>
-export type NovoGestor = Omit<GestorInstituicao, 'id'>
-export type NovoAluno = Omit<AlunoInstituicao, 'id'>
-
 export type CadastroResult =
     | { status: 'erro'; message: string }
-    | { status: 'sucesso'; role: 'instituicao'; usuario: NovaInstituicao }
-    | { status: 'sucesso'; role: 'gestor'; usuario: NovoGestor }
-    | { status: 'sucesso'; role: 'aluno'; usuario: NovoAluno }
+    | { status: 'sucesso'; role: 'instituicao'; usuario: Instituicao }
+    | { status: 'sucesso'; role: 'gestor'; usuario: GestorInstituicao }
+    | { status: 'sucesso'; role: 'aluno'; usuario: AlunoInstituicao }

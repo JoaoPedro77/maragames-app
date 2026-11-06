@@ -1,6 +1,6 @@
 import { Button } from "@/components/Button"
 import { View, ScrollView, Text, TextInputProps, KeyboardAvoidingView, Platform } from "react-native"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/Input"
 import { PageCard } from "@/components/PageCard"
 import { Select } from "@/components/Select"
@@ -32,40 +32,11 @@ type Aba = {
     campos: Campo[]
 }
 
-const instituicoesIniciais: Instituicao[] = [
-    { id: 1, nome: "Colégio Maragames", email: "contato@maragames.com", tipo: "Ensino" },
-    { id: 2, nome: "Universidade Norte", email: "adm@universidadenorte.com", tipo: "Ensino" },
-    { id: 3, nome: "Instituto TechBR", email: "contato@techbr.com", tipo: "Empresa" },
-]
-
-const gestoresIniciais: GestorInstituicao[] = [
-    { id: 1, instituicao_id: 1, nome: "Maria Souza", email: "maria.souza@maragames.com" },
-]
-
-const alunosIniciais: AlunoInstituicao[] = [
-    {
-        id: 1,
-        instituicao_id: 1,
-        nome: "João Lima",
-        email: "joao.lima@aluno.com",
-        xp: 120,
-        nivel: 2,
-        posicao_ranking: 5,
-        trilhas_completas: 1,
-        trilhas_andamento: 2,
-        duvidas: null,
-    },
-]
-
-function proximoId(itens: { id: number }[]) {
-    return itens.reduce((maior, item) => Math.max(maior, item.id), 0) + 1
-}
-
 export default function Cadastro() {
     const [abaAtiva, setAbaAtiva] = useState<AbaId>("instituicao")
-    const [instituicoes, setInstituicoes] = useState<Instituicao[]>(instituicoesIniciais)
-    const [gestores, setGestores] = useState<GestorInstituicao[]>(gestoresIniciais)
-    const [alunos, setAlunos] = useState<AlunoInstituicao[]>(alunosIniciais)
+    const [instituicoes, setInstituicoes] = useState<Instituicao[]>([])
+    const [gestores, setGestores] = useState<GestorInstituicao[]>([])
+    const [alunos, setAlunos] = useState<AlunoInstituicao[]>([])
 
     const {
         erro,
@@ -83,8 +54,27 @@ export default function Cadastro() {
         inputInstituicaoId,
         setInputInstituicaoId,
         cadastrar,
+        carregarDados,
         limparFormulario
     } = useRegisterController()
+
+    useEffect(() => {
+        let ativo = true
+
+        carregarDados().then((dados) => {
+            if (!ativo || !dados) {
+                return
+            }
+
+            setInstituicoes(dados.instituicoes)
+            setGestores(dados.gestores)
+            setAlunos(dados.alunos)
+        })
+
+        return () => {
+            ativo = false
+        }
+    }, [carregarDados])
 
     const opcoesInstituicoes: Opcao[] = instituicoes.map((instituicao) => ({
         label: instituicao.nome,
@@ -134,11 +124,11 @@ export default function Cadastro() {
         }
 
         if (result.role === 'instituicao') {
-            setInstituicoes((prev) => [...prev, { ...result.usuario, id: proximoId(prev) }])
+            setInstituicoes((prev) => [...prev, result.usuario])
         } else if (result.role === 'gestor') {
-            setGestores((prev) => [...prev, { ...result.usuario, id: proximoId(prev) }])
+            setGestores((prev) => [...prev, result.usuario])
         } else {
-            setAlunos((prev) => [...prev, { ...result.usuario, id: proximoId(prev) }])
+            setAlunos((prev) => [...prev, result.usuario])
         }
 
         limparFormulario()

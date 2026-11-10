@@ -24,7 +24,6 @@ export interface AlunoInstituicao {
     email: string
     xp: number
     nivel: number
-    posicao_ranking: number | null
     trilhas_completas: number
     trilhas_andamento: number
     duvidas: string | null

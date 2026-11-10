@@ -14,7 +14,7 @@ const SENHA_MIN_LENGTH = 6
 const COLUNAS_INSTITUICAO = 'id, nome, email, tipo'
 const COLUNAS_GESTOR = 'id, instituicao_id, nome, email'
 const COLUNAS_ALUNO =
-  'id, instituicao_id, nome, email, xp, nivel, posicao_ranking, trilhas_completas, trilhas_andamento, duvidas'
+  'id, instituicao_id, nome, email, xp, nivel, trilhas_completas, trilhas_andamento, duvidas'
 
 export type DadosCadastro = {
   instituicoes: Instituicao[]

@@ -5,6 +5,8 @@ import { PageCard } from "@/components/PageCard"
 import { Badge } from "@/components/Badge"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 import { useRouter } from "expo-router"
+import { useEffect } from "react"
+import { useInstitutionsController } from "@/controllers/institutionsController"
 
 type Dado = {
     icon: MaterialDesignIconsIconName
@@ -18,23 +20,19 @@ const dados: Dado[] = [
     { icon: "account-school", title: "Alunos", number: 156 },
 ]
 
-type Instituicao = {
-    nome: string
-    tipo: string
-    gestores: number
-    alunos: number
+const CONTAGENS = {
+    gestores: 3,
+    alunos: 48,
 }
-
-const instituicoes: Instituicao[] = [
-    { nome: "Colégio Maragames", tipo: "Escola", gestores: 3, alunos: 48 },
-    { nome: "Universidade Norte", tipo: "Universidade", gestores: 12, alunos: 320 },
-    { nome: "Instituto TechBR", tipo: "Instituto Técnico", gestores: 5, alunos: 96 },
-    { nome: "Escola Municipal Centro", tipo: "Escola", gestores: 2, alunos: 74 },
-    { nome: "Faculdade São Lucas", tipo: "Faculdade", gestores: 7, alunos: 210 },
-]
 
 export default function Cadastro() {
     const router = useRouter()
+    const { instituicoes, carregarInstituicoes } = useInstitutionsController()
+
+    useEffect(() => {
+        carregarInstituicoes()
+    }, [carregarInstituicoes])
+
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
             <ScrollView
@@ -73,7 +71,7 @@ export default function Cadastro() {
                         </Text>
                         <View className="gap-3">
                             {instituicoes.map((inst) => (
-                                <PageCard key={inst.nome} contentClassName="flex-col">
+                                <PageCard key={inst.id} contentClassName="flex-col">
                                     <View className="flex-row justify-between items-center">
                                         <View className="flex-col gap-1">
                                             <Text className="text-xl font-extrabold dark:text-slate-100 max-w-40">
@@ -84,8 +82,8 @@ export default function Cadastro() {
                                             </Text>
                                         </View>
                                         <View className="flex-col gap-1 items-end">
-                                            <Badge label="Gestores" value={inst.gestores} />
-                                            <Badge label="Alunos" value={inst.alunos} />
+                                            <Badge label="Gestores" value={CONTAGENS.gestores} />
+                                            <Badge label="Alunos" value={CONTAGENS.alunos} />
                                         </View>
                                     </View>
                                     <View>
@@ -98,7 +96,7 @@ export default function Cadastro() {
                                                 params: {
                                                     nome: inst.nome,
                                                     tipo: inst.tipo,
-                                                    gestoresCount: String(inst.gestores),
+                                                    gestoresCount: String(CONTAGENS.gestores),
                                                 },
                                             })}
                                             icon='information-slab-circle-outline'

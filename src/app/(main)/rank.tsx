@@ -16,7 +16,7 @@ export default function RankScreen() {
 
 function RankContent() {
     const router = useRouter()
-    const { alunos, carregarRanking } = useRankController()
+    const { alunos, porInstituicao, carregarRanking } = useRankController()
 
     useEffect(() => {
         carregarRanking()
@@ -32,7 +32,7 @@ function RankContent() {
                     <View className='flex-row items-center gap-2'>
                         <Icon name="trophy" size={20} color="#facc15" darkColor="#facc15" />
                         <Text className='text-xl font-bold dark:text-slate-200'>
-                            CLASSIFICAÇÃO GERAL
+                            {porInstituicao ? 'CLASSIFICAÇÃO' : 'CLASSIFICAÇÃO GERAL'}
                         </Text>
                     </View>
                     <View/>

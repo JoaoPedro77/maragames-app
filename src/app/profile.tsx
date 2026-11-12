@@ -46,7 +46,8 @@ function ProfileContent() {
     return id;
   }, [usuario, id]);
 
-  const { aluno, carregando, erro, carregarAluno } = useAlunoDetalheController(idAlvo);
+  const { aluno, carregando, erro, semPermissao, carregarAluno } =
+    useAlunoDetalheController(idAlvo);
 
   useEffect(() => {
     if (idAlvo) {
@@ -86,6 +87,17 @@ function ProfileContent() {
           color="#dc2626"
           accessibilityLabel="Carregando perfil"
         />
+      </View>
+    );
+  }
+
+  if (semPermissao) {
+    return (
+      <View className="flex-1 items-center justify-center gap-3 bg-white px-6 dark:bg-slate-900">
+        <Icon name="shield-alert-outline" size={40} color="#94a3b8" />
+        <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
+          Você não tem permissão para visualizar este perfil.
+        </Text>
       </View>
     );
   }

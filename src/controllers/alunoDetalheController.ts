@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 import type { AlunoInstituicao } from '../../types/User'
 
 const COLUNAS_ALUNO =
@@ -11,14 +12,21 @@ export type AlunoDetalhe = AlunoInstituicao & {
 }
 
 export function useAlunoDetalheController(id?: string) {
+  const { usuario } = useAuth()
   const [aluno, setAluno] = useState<AlunoDetalhe | null>(null)
   const [carregando, setCarregando] = useState(Boolean(id))
   const [erro, setErro] = useState(false)
+  const [semPermissao, setSemPermissao] = useState(false)
+
+  const perfil = usuario?.perfil ?? null
+  const usuarioId = usuario?.id ?? null
+  const instituicaoId = usuario?.instituicaoId ?? null
 
   const carregarAluno = useCallback(async () => {
     if (!id) {
       setAluno(null)
       setErro(false)
+      setSemPermissao(false)
       setCarregando(false)
       return
     }
@@ -28,30 +36,71 @@ export function useAlunoDetalheController(id?: string) {
     if (Number.isNaN(alunoId)) {
       setAluno(null)
       setErro(true)
+      setSemPermissao(false)
       setCarregando(false)
       return
     }
 
     setCarregando(true)
     setErro(false)
+    setSemPermissao(false)
 
     try {
-      const { data, error } = await supabase
+      if (perfil === 'aluno' && (usuarioId === null || alunoId !== usuarioId)) {
+        setAluno(null)
+        setSemPermissao(true)
+        return
+      }
+
+      const escopoInstituicao = perfil === 'admin' ? null : instituicaoId
+
+      if (perfil !== 'admin' && escopoInstituicao === null) {
+        setAluno(null)
+        setSemPermissao(true)
+        return
+      }
+
+      let consulta = supabase
         .from('aluno_instituicao')
         .select(COLUNAS_ALUNO)
         .eq('id', alunoId)
-        .maybeSingle()
 
-      if (error || !data) {
+      if (escopoInstituicao !== null) {
+        consulta = consulta.eq('instituicao_id', escopoInstituicao)
+      }
+
+      const { data, error } = await consulta.maybeSingle()
+
+      if (error) {
         setAluno(null)
         setErro(true)
         return
       }
 
-      const { data: ranking, error: rankingError } = await supabase
+      if (!data) {
+        setAluno(null)
+
+        if (perfil === 'gestor') {
+          setSemPermissao(true)
+        } else {
+          setErro(true)
+        }
+
+        return
+      }
+
+      let rankingQuery = supabase
         .from('aluno_instituicao')
         .select(COLUNAS_RANKING)
-        .order('xp', { ascending: false })
+
+      if (escopoInstituicao !== null) {
+        rankingQuery = rankingQuery.eq('instituicao_id', escopoInstituicao)
+      }
+
+      const { data: ranking, error: rankingError } = await rankingQuery.order(
+        'xp',
+        { ascending: false }
+      )
 
       let rank: number | null = null
 
@@ -67,12 +116,13 @@ export function useAlunoDetalheController(id?: string) {
     } finally {
       setCarregando(false)
     }
-  }, [id])
+  }, [id, perfil, usuarioId, instituicaoId])
 
   return {
     aluno,
     carregando,
     erro,
+    semPermissao,
     carregarAluno,
   }
 }

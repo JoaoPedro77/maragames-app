@@ -1,11 +1,14 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, Link } from 'expo-router';
+import { useEffect } from 'react';
 import { Icon } from '@/components/Icon';
 import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
 import { OngoingTracks } from '@/components/OngoingTracks';
 import { ClassRanking } from '@/components/ClassRanking';
 import { RoleGate } from '@/components/RoleGate';
+import { useAuth } from '@/contexts/AuthContext';
+import { useInstitutionController } from '@/controllers/institutionController';
 
 export default function InstitutionScreen() {
   return (
@@ -21,8 +24,22 @@ function InstitutionContent() {
     tipo?: string;
     gestoresCount?: string;
   }>();
-  const nome = params.nome || 'Escola Alpha - Polo Central';
-  const tipo = params.tipo || 'Escola';
+  const { usuario } = useAuth();
+  const ehGestor = usuario?.perfil === 'gestor';
+  const { instituicao, carregarInstituicao } = useInstitutionController(
+    ehGestor ? usuario?.instituicaoId : null
+  );
+
+  useEffect(() => {
+    carregarInstituicao();
+  }, [carregarInstituicao]);
+
+  const nome = ehGestor
+    ? instituicao?.nome ?? 'Minha instituição'
+    : params.nome || 'Instituição';
+  const tipo = ehGestor
+    ? instituicao?.tipo ?? 'Instituição'
+    : params.tipo || 'Instituição de ensino';
 
   return (
     <ScrollView
@@ -42,7 +59,7 @@ function InstitutionContent() {
 
           <View className="flex-1 gap-1">
             <Text className="text-xs font-bold uppercase text-violet-700 dark:text-violet-300">
-              {params.tipo || 'Instituição de ensino'}
+              {tipo}
             </Text>
             <Text className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
               {nome}
@@ -68,25 +85,27 @@ function InstitutionContent() {
               </Text>
             </Pressable>
           </Link>
-          <Link
-            href={{
-              pathname: '/managers',
-              params: { nome, tipo, gestoresCount: params.gestoresCount },
-            }}
-            asChild
-          >
-            <Pressable
-              accessibilityRole="link"
-              className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-slate-300 p-2 active:bg-violet-100 dark:border-slate-700 dark:active:bg-slate-700"
+          {!ehGestor && (
+            <Link
+              href={{
+                pathname: '/managers',
+                params: { nome, tipo, gestoresCount: params.gestoresCount },
+              }}
+              asChild
             >
-              <View className="h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-400/10">
-                <Icon name="badge-account-horizontal-outline" size={20} color="#1d4ed8" darkColor="#adc6ff" />
-              </View>
-              <Text className="flex-1 text-xs font-bold text-slate-700 dark:text-slate-300">
-                Ver Gestores
-              </Text>
-            </Pressable>
-          </Link>
+              <Pressable
+                accessibilityRole="link"
+                className="min-h-14 min-w-0 flex-1 flex-row items-center gap-2 rounded-lg border border-slate-300 p-2 active:bg-violet-100 dark:border-slate-700 dark:active:bg-slate-700"
+              >
+                <View className="h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-400/10">
+                  <Icon name="badge-account-horizontal-outline" size={20} color="#1d4ed8" darkColor="#adc6ff" />
+                </View>
+                <Text className="flex-1 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Ver Gestores
+                </Text>
+              </Pressable>
+            </Link>
+          )}
         </View>
       </View>
       <View className="gap-3">

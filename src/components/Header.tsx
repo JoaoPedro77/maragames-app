@@ -2,14 +2,17 @@ import { View, Text, Image } from 'react-native'
 import { Button } from './Button'
 import { usePathname, useRouter } from 'expo-router'
 import { ManagerHeader } from './ManagerHeader'
+import { useAuth } from '@/contexts/AuthContext'
 
 export function Header(props: any): any {
     const router = useRouter()
     const pathName = usePathname()
+    const { sair, usuario } = useAuth()
     const podeVoltar = pathName === '/profile' || pathName === '/institution' || pathName === '/managers'
-    const podeSair = pathName !== '/profile'
+    const podeSair = !!usuario
 
-    function routeLogout() {
+    async function routeLogout() {
+        await sair()
         router.replace('/login')
     }
 

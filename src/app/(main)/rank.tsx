@@ -4,8 +4,17 @@ import { ScrollView, View, Text } from 'react-native';
 import { Icon } from '@/components/Icon';
 import { useEffect } from 'react';
 import { useRankController } from '@/controllers/rankController';
+import { RoleGate } from '@/components/RoleGate';
 
-export default function Rank() {
+export default function RankScreen() {
+    return (
+        <RoleGate permitidos={['gestor', 'admin']} rota="/rank">
+            <RankContent />
+        </RoleGate>
+    )
+}
+
+function RankContent() {
     const router = useRouter()
     const { alunos, carregarRanking } = useRankController()
 
@@ -33,7 +42,12 @@ export default function Rank() {
                 </View>
                 {alunos.map((aluno) => (
                     <Card
-                        onPress={() => router.navigate('/profile')}
+                        onPress={() =>
+                            router.push({
+                                pathname: '/profile',
+                                params: { id: String(aluno.id) },
+                            })
+                        }
                         typeCard="rank"
                         key={aluno.id}
                         nome={aluno.nome}

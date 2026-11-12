@@ -137,7 +137,7 @@ export function useRegisterController() {
 
     const faltaNome = nome.length === 0
     const faltaEmail = email.length === 0
-    const faltaSenha = senha.length === 0
+    const faltaSenha = role !== 'instituicao' && senha.length === 0
     const faltaTipo = role === 'instituicao' && tipo.length === 0
     const faltaInstituicao = role !== 'instituicao' && !instituicaoSelecionada
 
@@ -149,7 +149,7 @@ export function useRegisterController() {
       return falhar("Informe um e-mail válido.")
     }
 
-    if (senha.length < SENHA_MIN_LENGTH) {
+    if (role !== 'instituicao' && senha.length < SENHA_MIN_LENGTH) {
       return falhar(`A senha deve ter no mínimo ${SENHA_MIN_LENGTH} caracteres.`)
     }
 
@@ -161,27 +161,33 @@ export function useRegisterController() {
       return falhar("E-mail já cadastrado.")
     }
 
+    const criaContaAuth = role !== 'instituicao'
+
     try {
-      const { data: authData, error: authError } = await supabaseCadastro.auth.signUp({
-        email,
-        password: senha,
-      })
+      if (criaContaAuth) {
+        const { data: authData, error: authError } = await supabaseCadastro.auth.signUp({
+          email,
+          password: senha,
+        })
 
-      const mensagemAuth = authError?.message.toLowerCase() ?? ''
-      const identidadesVazias = authData?.user?.identities?.length === 0
-      const erroDuplicado = authError?.status === 422 || mensagemAuth.includes('already registered')
+        const mensagemAuth = authError?.message.toLowerCase() ?? ''
+        const identidadesVazias = authData?.user?.identities?.length === 0
+        const erroDuplicado = authError?.status === 422 || mensagemAuth.includes('already registered')
 
-      if (erroDuplicado || identidadesVazias) {
-        return falhar("E-mail já cadastrado.")
-      }
+        if (erroDuplicado || identidadesVazias) {
+          return falhar("E-mail já cadastrado.")
+        }
 
-      if (authError || !authData?.user) {
-        return falhar(authError?.message ?? "Não foi possível realizar o cadastro. Tente novamente.")
+        if (authError || !authData?.user) {
+          return falhar(authError?.message ?? "Não foi possível realizar o cadastro. Tente novamente.")
+        }
       }
 
       const result = await inserirPerfil(role, { nome, email, tipo, instituicaoId })
 
-      await supabaseCadastro.auth.signOut().catch(() => undefined)
+      if (criaContaAuth) {
+        await supabaseCadastro.auth.signOut().catch(() => undefined)
+      }
 
       if (result.status === 'erro') {
         return result
@@ -192,7 +198,9 @@ export function useRegisterController() {
 
       return result
     } catch {
-      await supabaseCadastro.auth.signOut().catch(() => undefined)
+      if (criaContaAuth) {
+        await supabaseCadastro.auth.signOut().catch(() => undefined)
+      }
 
       return falhar("Não foi possível conectar. Tente novamente.")
     }

@@ -5,8 +5,17 @@ import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
 import { OngoingTracks } from '@/components/OngoingTracks';
 import { ClassRanking } from '@/components/ClassRanking';
+import { RoleGate } from '@/components/RoleGate';
 
 export default function InstitutionScreen() {
+  return (
+    <RoleGate permitidos={['gestor', 'admin']}>
+      <InstitutionContent />
+    </RoleGate>
+  );
+}
+
+function InstitutionContent() {
   const params = useLocalSearchParams<{
     nome?: string;
     tipo?: string;

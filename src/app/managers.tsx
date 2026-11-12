@@ -5,6 +5,7 @@ import { PageCard } from '@/components/PageCard';
 import { Input } from '@/components/Input';
 import { Icon } from '@/components/Icon';
 import { Button } from '@/components/Button';
+import { RoleGate } from '@/components/RoleGate';
 
 const mockGestores = [
   {
@@ -46,6 +47,14 @@ const mockGestores = [
 ];
 
 export default function ManagersScreen() {
+  return (
+    <RoleGate permitidos={['admin']}>
+      <ManagersContent />
+    </RoleGate>
+  );
+}
+
+function ManagersContent() {
   const router = useRouter();
   
   const params = useLocalSearchParams<{

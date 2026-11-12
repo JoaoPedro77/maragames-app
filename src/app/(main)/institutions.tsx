@@ -7,6 +7,7 @@ import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/mat
 import { useRouter } from "expo-router"
 import { useEffect } from "react"
 import { useInstitutionsController } from "@/controllers/institutionsController"
+import { RoleGate } from "@/components/RoleGate"
 
 type Dado = {
     icon: MaterialDesignIconsIconName
@@ -25,7 +26,15 @@ const CONTAGENS = {
     alunos: 48,
 }
 
-export default function Cadastro() {
+export default function InstitutionsScreen() {
+    return (
+        <RoleGate permitidos={['admin']} rota="/institutions">
+            <Instituicoes />
+        </RoleGate>
+    )
+}
+
+function Instituicoes() {
     const router = useRouter()
     const { instituicoes, carregarInstituicoes } = useInstitutionsController()
 

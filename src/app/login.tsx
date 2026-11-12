@@ -3,6 +3,7 @@ import { GradientText } from '@/components/GradientText';
 import { Input } from '@/components/Input';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
 import {
   Image,
   KeyboardAvoidingView,
@@ -13,13 +14,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLoginController } from '@/controllers/loginController';
+import { useAuth } from '@/contexts/AuthContext';
+import { homePorPerfil } from '@/hooks/useRequireRole';
 
 export default function LoginScreen() {
   const router = useRouter();
-
-  function handleLogin() {
-    router.replace('/rank');
-  }
+  const { usuario, carregando: carregandoSessao } = useAuth();
+  const [enviando, setEnviando] = useState(false);
 
   const {
     erro,
@@ -31,14 +32,24 @@ export default function LoginScreen() {
     login,
   } = useLoginController()
 
-  async function handleSubmit() {
-    const resultado = await login()
+  useEffect(() => {
+    if (!carregandoSessao && usuario) {
+      router.replace(homePorPerfil(usuario.perfil))
+    }
+  }, [carregandoSessao, usuario, router])
 
-    if (resultado === 'sucesso') {
-      handleLogin()
+  async function handleSubmit() {
+    if (enviando) {
+      return
     }
 
-    return
+    setEnviando(true)
+    const resultado = await login()
+    setEnviando(false)
+
+    if (resultado.status === 'sucesso') {
+      router.replace(homePorPerfil(resultado.perfil))
+    }
   }
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-slate-900">
@@ -100,7 +111,14 @@ export default function LoginScreen() {
 
             {erro && <Text className='text-red-500 text-md font-semibold'>{erroMessage}</Text>}
 
-            <Button typeButton='default' title="Entrar" icon='login-variant' size={20} onPress={handleSubmit} />
+            <Button
+              typeButton='default'
+              title={enviando ? 'Entrando...' : 'Entrar'}
+              icon='login-variant'
+              size={20}
+              disabled={enviando}
+              onPress={handleSubmit}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

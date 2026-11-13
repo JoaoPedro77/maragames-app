@@ -211,7 +211,7 @@ function ProfileContent() {
         ) : (
           <PageCard
             className="mt-6"
-            title="Dúvidas?"
+            title="Dúvidas da Estudante"
             icon="information-slab-circle-outline"
           >
             <Text className="text-slate-600 dark:text-slate-400 text-md leading-5">
@@ -222,10 +222,6 @@ function ProfileContent() {
           </PageCard>
         )}
 
-        <Text className="mb-10 text-xs leading-5 text-slate-500 dark:text-slate-400">
-          A sequência e os detalhes das trilhas em andamento são dados simulados
-          neste protótipo.
-        </Text>
       </ScrollView>
     </View>
   );

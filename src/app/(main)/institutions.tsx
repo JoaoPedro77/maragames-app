@@ -103,7 +103,7 @@ function Instituicoes() {
                     </View>
                     <View className="gap-2">
                         <Text className="text-xl font-extrabold dark:text-slate-100">
-                            Exibindo {instituicoes.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, instituicoes.length)} de {instituicoes.length} Resultados
+                            Resultados
                         </Text>
                         {carregando ? (
                             <View className="items-center py-10">

@@ -24,7 +24,6 @@ function InstitutionContent() {
     id?: string;
     nome?: string;
     tipo?: string;
-    gestoresCount?: string;
   }>();
   const { usuario } = useAuth();
   const ehGestor = usuario?.perfil === 'gestor';
@@ -147,7 +146,7 @@ function InstitutionContent() {
             <Link
               href={{
                 pathname: '/managers',
-                params: { nome, tipo, gestoresCount: params.gestoresCount },
+                params: { id: String(instituicaoId), nome, tipo },
               }}
               asChild
             >

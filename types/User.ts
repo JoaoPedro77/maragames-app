@@ -27,6 +27,11 @@ export interface Instituicao {
     tipo: string
 }
 
+export interface InstituicaoResumo extends Instituicao {
+    gestoresCount: number
+    alunosCount: number
+}
+
 export interface GestorInstituicao {
     id: number
     instituicao_id: number

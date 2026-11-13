@@ -19,6 +19,8 @@ type Campo = {
     placeholder?: string
     secureTextEntry?: boolean
     autoComplete?: TextInputProps["autoComplete"]
+    autoCapitalize?: TextInputProps["autoCapitalize"]
+    autoCorrect?: boolean
     options?: Opcao[]
     value?: string
     onChange?: (value: string) => void
@@ -105,7 +107,7 @@ function Cadastro() {
                 { id: "nome", label: "Nome do Gestor", icon: "account-tie", keyboardType: "default", placeholder: "Ex: Maria Souza", value: inputNome, onChange: setInputNome },
                 { id: "instituicao", label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição", options: opcoesInstituicoes, value: inputInstituicaoId, onChange: setInputInstituicaoId },
                 { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
-                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do gestor", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha }
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do gestor", secureTextEntry: true, autoComplete: "new-password", autoCapitalize: "none", autoCorrect: false, value: inputSenha, onChange: setInputSenha }
             ]
         },
         {
@@ -114,7 +116,7 @@ function Cadastro() {
                 { id: "nome", label: "Nome do Aluno", icon: "account-school", keyboardType: "default", placeholder: "Ex: Maria Souza", value: inputNome, onChange: setInputNome },
                 { id: "instituicao", label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição", options: opcoesInstituicoes, value: inputInstituicaoId, onChange: setInputInstituicaoId },
                 { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
-                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do aluno", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha }
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do aluno", secureTextEntry: true, autoComplete: "new-password", autoCapitalize: "none", autoCorrect: false, value: inputSenha, onChange: setInputSenha }
             ]
         },
     ]
@@ -211,7 +213,8 @@ function Cadastro() {
                                                     autoComplete={campo.autoComplete}
                                                     value={campo.value}
                                                     onChangeText={campo.onChange}
-                                                    autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
+                                                    autoCapitalize={campo.autoCapitalize ?? (campo.keyboardType === "email-address" ? "none" : undefined)}
+                                                    autoCorrect={campo.autoCorrect}
                                                     returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
                                                 />
                                             )

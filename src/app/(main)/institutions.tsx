@@ -103,6 +103,7 @@ function Instituicoes() {
                                             onPress={() => router.push({
                                                 pathname: '/institution',
                                                 params: {
+                                                    id: String(inst.id),
                                                     nome: inst.nome,
                                                     tipo: inst.tipo,
                                                     gestoresCount: String(CONTAGENS.gestores),

@@ -1,14 +1,15 @@
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, Link } from 'expo-router';
 import { useEffect } from 'react';
 import { Icon } from '@/components/Icon';
+import { Button } from '@/components/Button';
 import { MetricCard } from '@/components/MetricCard';
 import { WeeklyEngagement } from '@/components/WeeklyEngagement';
 import { OngoingTracks } from '@/components/OngoingTracks';
 import { ClassRanking } from '@/components/ClassRanking';
 import { RoleGate } from '@/components/RoleGate';
 import { useAuth } from '@/contexts/AuthContext';
-import { useInstitutionController } from '@/controllers/institutionController';
+import { useInstitutionDashboardController } from '@/controllers/institutionController';
 
 export default function InstitutionScreen() {
   return (
@@ -20,26 +21,88 @@ export default function InstitutionScreen() {
 
 function InstitutionContent() {
   const params = useLocalSearchParams<{
+    id?: string;
     nome?: string;
     tipo?: string;
     gestoresCount?: string;
   }>();
   const { usuario } = useAuth();
   const ehGestor = usuario?.perfil === 'gestor';
-  const { instituicao, carregarInstituicao } = useInstitutionController(
-    ehGestor ? usuario?.instituicaoId : null
-  );
+  const idParam = params.id ? Number(params.id) : null;
+  const instituicaoId = ehGestor
+    ? usuario?.instituicaoId ?? null
+    : idParam !== null && !Number.isNaN(idParam)
+      ? idParam
+      : null;
+
+  const {
+    instituicao,
+    metricas,
+    topAlunos,
+    dificuldades,
+    carregando,
+    erro,
+    carregarDashboard,
+  } = useInstitutionDashboardController(instituicaoId);
 
   useEffect(() => {
-    carregarInstituicao();
-  }, [carregarInstituicao]);
+    carregarDashboard();
+  }, [carregarDashboard]);
 
-  const nome = ehGestor
-    ? instituicao?.nome ?? 'Minha instituição'
-    : params.nome || 'Instituição';
-  const tipo = ehGestor
-    ? instituicao?.tipo ?? 'Instituição'
-    : params.tipo || 'Instituição de ensino';
+  if (!instituicaoId) {
+    return (
+      <View className="flex-1 items-center justify-center gap-3 bg-white px-6 dark:bg-slate-900">
+        <Icon name="bank-off-outline" size={40} color="#94a3b8" />
+        <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
+          {ehGestor
+            ? 'Sua conta não está vinculada a uma instituição.'
+            : 'Selecione uma instituição para visualizar o dashboard.'}
+        </Text>
+        {!ehGestor && (
+          <Link href="/institutions" asChild>
+            <Pressable accessibilityRole="link" className="min-h-11 justify-center">
+              <Text className="text-sm font-bold text-red-600 dark:text-[#ff535b]">
+                Ir para instituições
+              </Text>
+            </Pressable>
+          </Link>
+        )}
+      </View>
+    );
+  }
+
+  if (carregando) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white dark:bg-slate-900">
+        <ActivityIndicator
+          size="large"
+          color="#dc2626"
+          accessibilityLabel="Carregando dashboard"
+        />
+      </View>
+    );
+  }
+
+  if (erro || !instituicao) {
+    return (
+      <View className="flex-1 items-center justify-center gap-3 bg-white px-6 dark:bg-slate-900">
+        <Icon name="alert-circle-outline" size={40} color="#94a3b8" />
+        <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
+          Não foi possível carregar o dashboard desta instituição.
+        </Text>
+        <Button
+          typeButton="default"
+          title="Tentar novamente"
+          icon="refresh"
+          size={20}
+          onPress={carregarDashboard}
+        />
+      </View>
+    );
+  }
+
+  const nome = instituicao.nome;
+  const tipo = instituicao.tipo;
 
   return (
     <ScrollView
@@ -64,11 +127,6 @@ function InstitutionContent() {
             <Text className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
               {nome}
             </Text>
-          </View>
-
-          <View className="flex-row items-center gap-1 rounded-full bg-emerald-100 px-2 py-1 dark:bg-emerald-950">
-            <View className="h-1.5 w-1.5 rounded-full bg-emerald-700 dark:bg-emerald-400" />
-            <Text className="text-xs font-bold text-emerald-700 dark:text-emerald-400">Ativa</Text>
           </View>
         </View>
         <View className="flex-row gap-2 border-t border-slate-300 pt-3 dark:border-slate-700">
@@ -111,25 +169,83 @@ function InstitutionContent() {
       <View className="gap-3">
         <View className="flex-row flex-wrap items-center justify-between gap-2">
           <Text className="text-base font-bold text-slate-700 dark:text-slate-300">
-            Métricas Gerais da Turma
+            Métricas Gerais da Instituição
           </Text>
           <Text className="text-xs font-bold text-violet-700 dark:text-violet-300">
-            Tempo Real
+            Dados reais
           </Text>
         </View>
 
         <View className="flex-row items-stretch gap-3">
-          <MetricCard title="Alunos Ativos" value="142" suffix="/ 150" icon="account-group-outline" />
-          <MetricCard title="Trilhas Concluídas" value="4" icon="check-circle-outline" highlighted />
+          <MetricCard
+            title="Alunos"
+            value={String(metricas.totalAlunos)}
+            icon="account-group-outline"
+          />
+          <MetricCard
+            title="Trilhas Concluídas"
+            value={String(metricas.trilhasConcluidas)}
+            icon="check-circle-outline"
+            highlighted
+          />
         </View>
         <View className="flex-row items-stretch gap-3">
-          <MetricCard title="Nível Médio" value="Nvl 7.4" icon="medal-outline" progress={74} />
-          <MetricCard title="Taxa de Acerto" value="78.5%" icon="chart-pie" />
+          <MetricCard
+            title="Nível Médio"
+            value={`Nvl ${metricas.nivelMedio.toLocaleString('pt-BR', {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            })}`}
+            icon="medal-outline"
+          />
+          <MetricCard
+            title="XP Médio"
+            value={metricas.xpMedio.toLocaleString('pt-BR')}
+            icon="star-outline"
+          />
         </View>
       </View>
+
+      <View className="gap-3 rounded-xl border border-slate-300 bg-slate-100 p-4 dark:border-slate-700 dark:bg-slate-800">
+        <View className="flex-row flex-wrap items-center justify-between gap-2">
+          <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">
+            Dificuldades Registradas
+          </Text>
+          <Text className="text-xs font-bold text-slate-600 dark:text-slate-400">
+            {metricas.alunosComDuvidas} aluno(s)
+          </Text>
+        </View>
+        {dificuldades.length === 0 ? (
+          <Text className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+            Nenhuma dificuldade registrada.
+          </Text>
+        ) : (
+          dificuldades.map((aluno) => (
+            <View
+              key={aluno.id}
+              className="gap-1 rounded-lg border border-slate-300 p-2 dark:border-slate-700"
+            >
+              <Text className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                {aluno.nome}
+              </Text>
+              <Text
+                className="text-xs text-slate-600 dark:text-slate-400"
+                numberOfLines={3}
+              >
+                {aluno.duvidas}
+              </Text>
+            </View>
+          ))
+        )}
+      </View>
+
+      <ClassRanking alunos={topAlunos} instituicaoNome={nome} />
+
+      <Text className="text-xs font-bold uppercase text-amber-600 dark:text-amber-400">
+        As seções abaixo usam dados simulados neste protótipo.
+      </Text>
       <WeeklyEngagement />
       <OngoingTracks />
-      <ClassRanking />
     </ScrollView>
   );
 }

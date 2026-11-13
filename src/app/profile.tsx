@@ -47,8 +47,14 @@ function ProfileContent() {
     return id;
   }, [usuario, id]);
 
-  const { aluno, carregando, erro, semPermissao, carregarAluno } =
-    useAlunoDetalheController(idAlvo);
+  const {
+    aluno,
+    carregando,
+    erro,
+    semPermissao,
+    carregarAluno,
+    recarregarDuvidas,
+  } = useAlunoDetalheController(idAlvo);
 
   useEffect(() => {
     if (idAlvo) {
@@ -188,7 +194,20 @@ function ProfileContent() {
         </View>
 
         {ehDono ? (
-          <StudentQuestionForm />
+          <>
+            <StudentQuestionForm onSubmitted={recarregarDuvidas} />
+            <PageCard
+              className="mb-6"
+              title="Suas dúvidas"
+              icon="comment-quote-outline"
+            >
+              <Text className="text-slate-600 dark:text-slate-400 text-md leading-5">
+                {aluno.duvidas?.trim()
+                  ? aluno.duvidas
+                  : 'Nenhuma dúvida registrada ainda.'}
+              </Text>
+            </PageCard>
+          </>
         ) : (
           <PageCard
             className="mt-6"

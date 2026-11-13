@@ -203,6 +203,7 @@ function InstitutionContent() {
         </View>
       </View>
 
+        <ClassRanking alunos={topAlunos} instituicaoNome={nome} />
       <View className="gap-3 rounded-xl border border-slate-300 bg-slate-100 p-4 dark:border-slate-700 dark:bg-slate-800">
         <View className="flex-row flex-wrap items-center justify-between gap-2">
           <Text className="text-base font-extrabold text-slate-900 dark:text-slate-100">
@@ -236,11 +237,6 @@ function InstitutionContent() {
         )}
       </View>
 
-      <ClassRanking alunos={topAlunos} instituicaoNome={nome} />
-
-      <Text className="text-xs font-bold uppercase text-amber-600 dark:text-amber-400">
-        As seções abaixo usam dados simulados neste protótipo.
-      </Text>
       <WeeklyEngagement />
       <OngoingTracks />
     </ScrollView>

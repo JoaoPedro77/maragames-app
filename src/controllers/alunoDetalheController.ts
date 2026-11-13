@@ -118,11 +118,32 @@ export function useAlunoDetalheController(id?: string) {
     }
   }, [id, perfil, usuarioId, instituicaoId])
 
+  const recarregarDuvidas = useCallback(async () => {
+    if (!id) return
+
+    const alunoId = Number(id)
+
+    if (Number.isNaN(alunoId)) return
+
+    const { data, error } = await supabase
+      .from('aluno_instituicao')
+      .select('duvidas')
+      .eq('id', alunoId)
+      .maybeSingle()
+
+    if (error || !data) return
+
+    setAluno((atual) =>
+      atual ? { ...atual, duvidas: data.duvidas } : atual
+    )
+  }, [id])
+
   return {
     aluno,
     carregando,
     erro,
     semPermissao,
     carregarAluno,
+    recarregarDuvidas,
   }
 }

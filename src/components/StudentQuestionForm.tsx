@@ -7,9 +7,20 @@ import {
   useStudentQuestionController,
 } from '@/controllers/studentQuestionController';
 
-export function StudentQuestionForm() {
+type StudentQuestionFormProps = {
+  onSubmitted?: () => void;
+};
+
+export function StudentQuestionForm({ onSubmitted }: StudentQuestionFormProps) {
   const { question, changeQuestion, sending, error, success, submitQuestion } =
     useStudentQuestionController();
+
+  async function handleSubmit() {
+    const enviado = await submitQuestion();
+    if (enviado) {
+      onSubmitted?.();
+    }
+  }
 
   return (
     <PageCard
@@ -55,7 +66,7 @@ export function StudentQuestionForm() {
         size={20}
         disabled={sending}
         accessibilityState={{ disabled: sending, busy: sending }}
-        onPress={submitQuestion}
+        onPress={handleSubmit}
       />
     </PageCard>
   );

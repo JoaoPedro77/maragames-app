@@ -6,12 +6,13 @@ import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { useRankController } from '@/controllers/rankController';
 import { RoleGate } from '@/components/RoleGate';
 import { Pagination } from '@/components/Pagination';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PAGE_SIZE = 6;
 
 export default function RankScreen() {
     return (
-        <RoleGate permitidos={['gestor', 'admin']} rota="/rank">
+        <RoleGate permitidos={['aluno', 'gestor', 'admin']} rota="/rank">
             <RankContent />
         </RoleGate>
     )
@@ -19,7 +20,9 @@ export default function RankScreen() {
 
 function RankContent() {
     const router = useRouter()
+    const { usuario } = useAuth()
     const { alunos, porInstituicao, carregarRanking } = useRankController()
+    const podeAbrirPerfil = usuario?.perfil !== 'aluno'
 
     useEffect(() => {
         carregarRanking()
@@ -57,11 +60,14 @@ function RankContent() {
                 </View>
                 {alunosDaPagina.map((aluno) => (
                     <Card
-                        onPress={() =>
-                            router.push({
-                                pathname: '/profile',
-                                params: { id: String(aluno.id) },
-                            })
+                        onPress={
+                            podeAbrirPerfil
+                                ? () =>
+                                      router.push({
+                                          pathname: '/profile',
+                                          params: { id: String(aluno.id) },
+                                      })
+                                : undefined
                         }
                         typeCard="rank"
                         key={aluno.id}

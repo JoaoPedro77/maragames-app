@@ -46,7 +46,8 @@ export function RankCard(props: RankProps) {
 
     return (
         <Pressable
-            accessibilityRole="button"
+            accessibilityRole={props.onPress ? 'button' : undefined}
+            disabled={!props.onPress}
             onPress={props.onPress}
             onPressIn={() => setPressed(true)}
             onPressOut={() => setPressed(false)}

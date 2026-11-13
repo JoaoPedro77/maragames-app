@@ -9,7 +9,10 @@ export function Header(props: any): any {
     const router = useRouter()
     const pathName = usePathname()
     const { sair, usuario } = useAuth()
-    const podeVoltar = pathName === '/profile' || (pathName === '/institution' && usuario?.perfil === 'admin') || pathName === '/managers'
+    const podeVoltar =
+        (pathName === '/profile' && usuario?.perfil !== 'aluno') ||
+        (pathName === '/institution' && usuario?.perfil === 'admin') ||
+        pathName === '/managers'
     const podeSair = !!usuario
 
     async function routeLogout() {

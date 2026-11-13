@@ -76,8 +76,8 @@ function ButtonFooter({ title, icon, size, color, darkColor, route, ativo = fals
       onPress={() => router.navigate(route)}
       className={
         !ativo
-          ? "h-16 w-1/3 items-center p-3 justify-center rounded-xl bg-slate-100 active:bg-slate-300 dark:bg-slate-800 dark:active:bg-slate-700"
-          : "h-16 w-1/3 items-center p-3 justify-center rounded-lg bg-red-600 dark:active:bg-red-800"
+          ? "h-16 flex-1 items-center p-3 justify-center rounded-xl bg-slate-100 active:bg-slate-300 dark:bg-slate-800 dark:active:bg-slate-700"
+          : "h-16 flex-1 items-center p-3 justify-center rounded-lg bg-red-600 dark:active:bg-red-800"
       }
       {...props}
       onPressIn={(event) => {

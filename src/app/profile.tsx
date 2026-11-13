@@ -1,31 +1,135 @@
+import { useEffect, useMemo } from 'react';
+import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { GradientText } from '@/components/GradientText';
 import { Card } from '@/components/Card';
 import { PageCard } from '@/components/PageCard';
-import { View, Text, Image, ScrollView } from 'react-native';
 import { Icon } from '@/components/Icon';
+import { RoleGate } from '@/components/RoleGate';
+import { useAuth } from '@/contexts/AuthContext';
+import { homePorPerfil } from '@/hooks/useRequireRole';
+import { useAlunoDetalheController } from '@/controllers/alunoDetalheController';
 import { StudentQuestionForm } from '@/components/StudentQuestionForm';
 
-const mockProfile = {
-  name: 'João da Silva',
-  username: '@joaodasilva',
-  sequency: '15 dias em sequência!',
-  avatar: 'https://ui-avatars.com/api/?name=João+da+Silva&background=7a2bcd&color=fff&size=200',
-  xp: 12450,
-  level: 8,
-  rank: 42,
-  completedTracks: 12,
-  inProgressTracks: [
-    { id: 1, title: 'Game Design', progress: 65, restante: 6 },
-    { id: 2, title: 'Curiosidade dos Games', progress: 30, restante: 23 },
-    { id: 3, title: 'Godot Engine', progress: 10, restante: 26 },
-  ],
-};
+const mockSequency = '15 dias em sequência!';
+const mockInProgressTracks = [
+  { id: 1, title: 'Game Design', progress: 65, restante: 6 },
+  { id: 2, title: 'Curiosidade dos Games', progress: 30, restante: 23 },
+  { id: 3, title: 'Godot Engine', progress: 10, restante: 26 },
+];
 
-export default function Profile() {
+export default function ProfileScreen() {
+  return (
+    <RoleGate permitidos={['aluno', 'gestor', 'admin']}>
+      <ProfileContent />
+    </RoleGate>
+  );
+}
+
+function ProfileContent() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { usuario } = useAuth();
+
+  const idAlvo = useMemo(() => {
+    if (!usuario) {
+      return undefined;
+    }
+
+    if (usuario.perfil === 'aluno') {
+      if (!id) {
+        return String(usuario.id);
+      }
+
+      return Number(id) === usuario.id ? id : undefined;
+    }
+
+    return id;
+  }, [usuario, id]);
+
+  const {
+    aluno,
+    carregando,
+    erro,
+    semPermissao,
+    carregarAluno,
+    recarregarDuvidas,
+  } = useAlunoDetalheController(idAlvo);
+
+  useEffect(() => {
+    if (idAlvo) {
+      carregarAluno();
+    }
+  }, [idAlvo, carregarAluno]);
+
+  useEffect(() => {
+    if (!usuario) {
+      return;
+    }
+
+    if (usuario.perfil === 'aluno') {
+      if (id && Number(id) !== usuario.id) {
+        router.replace('/profile');
+      }
+      return;
+    }
+
+    if (!id) {
+      router.replace(homePorPerfil(usuario.perfil));
+    }
+  }, [usuario, id, router]);
+
+  const ehDono =
+    !!usuario &&
+    usuario.perfil === 'aluno' &&
+    !!aluno &&
+    (aluno.id === usuario.id ||
+      aluno.email.trim().toLowerCase() === usuario.email.trim().toLowerCase());
+
+  if (!idAlvo || carregando) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white dark:bg-slate-900">
+        <ActivityIndicator
+          size="large"
+          color="#dc2626"
+          accessibilityLabel="Carregando perfil"
+        />
+      </View>
+    );
+  }
+
+  if (semPermissao) {
+    return (
+      <View className="flex-1 items-center justify-center gap-3 bg-white px-6 dark:bg-slate-900">
+        <Icon name="shield-alert-outline" size={40} color="#94a3b8" />
+        <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
+          Você não tem permissão para visualizar este perfil.
+        </Text>
+      </View>
+    );
+  }
+
+  if (erro || !aluno) {
+    return (
+      <View className="flex-1 items-center justify-center gap-3 bg-white px-6 dark:bg-slate-900">
+        <Icon name="account-alert-outline" size={40} color="#94a3b8" />
+        <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
+          Não foi possível carregar as informações deste perfil.
+        </Text>
+      </View>
+    );
+  }
+
+  const username = `@${aluno.email.split('@')[0]}`;
+  const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    aluno.nome
+  )}&background=7a2bcd&color=fff&size=200`;
+
   const stats = [
-    { label: 'XP', value: mockProfile.xp.toLocaleString('pt-BR') },
-    { label: 'Nível', value: mockProfile.level.toString() },
-    { label: 'Rank', value: `#${mockProfile.rank}` },
-    { label: 'Concluídas', value: mockProfile.completedTracks.toString() },
+    { label: 'XP', value: aluno.xp.toLocaleString('pt-BR') },
+    { label: 'Nível', value: aluno.nivel.toString() },
+    { label: 'Rank', value: aluno.rank ? `#${aluno.rank}` : '—' },
+    { label: 'Concluídas', value: aluno.trilhas_completas.toString() },
   ];
 
   return (
@@ -36,32 +140,29 @@ export default function Profile() {
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets
       >
-
         <View className="flex flex-row gap-4 pt-5 items-center">
-          <Image className='rounded-full h-20 w-20'
-            source={{ uri: mockProfile.avatar }}
-          />
-            <View>
-              <Text className="text-3xl text-slate-600 dark:text-slate-200 font-extrabold">
-                {mockProfile.name}
-              </Text>
-              <Text className=" text-slate-400 dark:text-slate-500 text-lg" >
-                {mockProfile.username}
-              </Text>
+          <Image className="rounded-full h-20 w-20" source={{ uri: avatar }} />
+          <View>
+            <Text className="text-3xl text-slate-600 dark:text-slate-200 font-extrabold">
+              {aluno.nome}
+            </Text>
+            <Text className="text-slate-400 dark:text-slate-500 text-lg">
+              {username}
+            </Text>
           </View>
         </View>
-        
+
         <View className="mt-8 flex flex-col gap-2 items-center justify-center">
           <View className="flex flex-row items-center justify-center">
             <Icon name="fire" size={20} color="#5049e3" darkColor="#5049e3" />
-            <Text className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              {mockProfile.sequency}
-            </Text>
+            <GradientText className="text-xl font-bold">
+              {mockSequency}
+            </GradientText>
           </View>
           <PageCard contentClassName="flex-row w-full">
-            {stats.map((stat, index) => (
-              <View key={index} className="flex-grow p-1">
-                <View className='flex-grow items-center'>
+            {stats.map((stat) => (
+              <View key={stat.label} className="flex-grow p-1">
+                <View className="flex-grow items-center">
                   <Text className="text-slate-600 dark:text-slate-400 text-md font-medium mb-1">
                     {stat.label}
                   </Text>
@@ -74,14 +175,14 @@ export default function Profile() {
           </PageCard>
         </View>
 
-        <View className='mt-6 w-full gap-2'>
-          <View className=''>
+        <View className="mt-6 w-full gap-2">
+          <View>
             <Text className="text-2xl font-extrabold dark:text-slate-100 mb-2">
               Trilhas em Andamento
             </Text>
           </View>
 
-          {mockProfile.inProgressTracks.map((track) => (
+          {mockInProgressTracks.map((track) => (
             <Card
               typeCard="discente"
               key={track.id}
@@ -92,8 +193,40 @@ export default function Profile() {
           ))}
         </View>
 
-        <StudentQuestionForm />
-      </ScrollView >
+        {ehDono ? (
+          <>
+            <StudentQuestionForm onSubmitted={recarregarDuvidas} />
+            <PageCard
+              className="mb-6"
+              title="Suas dúvidas"
+              icon="comment-quote-outline"
+            >
+              <Text className="text-slate-600 dark:text-slate-400 text-md leading-5">
+                {aluno.duvidas?.trim()
+                  ? aluno.duvidas
+                  : 'Nenhuma dúvida registrada ainda.'}
+              </Text>
+            </PageCard>
+          </>
+        ) : (
+          <PageCard
+            className="mt-6"
+            title="Dúvidas?"
+            icon="information-slab-circle-outline"
+          >
+            <Text className="text-slate-600 dark:text-slate-400 text-md leading-5">
+              {aluno.duvidas?.trim()
+                ? aluno.duvidas
+                : 'Nenhuma dificuldade registrada.'}
+            </Text>
+          </PageCard>
+        )}
+
+        <Text className="mb-10 text-xs leading-5 text-slate-500 dark:text-slate-400">
+          A sequência e os detalhes das trilhas em andamento são dados simulados
+          neste protótipo.
+        </Text>
+      </ScrollView>
     </View>
   );
 }

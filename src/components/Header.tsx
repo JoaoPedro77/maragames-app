@@ -1,26 +1,27 @@
 import { View, Text, Image } from 'react-native'
 import { Button } from './Button'
 import { usePathname, useRouter } from 'expo-router'
-import { ManagerHeader } from './ManagerHeader'
+import { useAuth } from '@/contexts/AuthContext'
 import { useColorScheme } from 'nativewind'
 
 export function Header(props: any): any {
     const { colorScheme } = useColorScheme()
     const router = useRouter()
     const pathName = usePathname()
-    const podeVoltar = pathName === '/profile' || pathName === '/institution' || pathName === '/managers'
-    const podeSair = pathName !== '/profile'
+    const { sair, usuario } = useAuth()
+    const podeVoltar =
+        (pathName === '/profile' && usuario?.perfil !== 'aluno') ||
+        (pathName === '/institution' && usuario?.perfil === 'admin') ||
+        pathName === '/managers'
+    const podeSair = !!usuario
 
-    function routeLogout() {
+    async function routeLogout() {
+        await sair()
         router.replace('/login')
     }
 
     function routeBack() {
         router.back()
-    }
-
-    if (pathName === '/institution') {
-        return <ManagerHeader onBack={routeBack} onLogout={routeLogout} />
     }
 
     return (

@@ -3,11 +3,33 @@ export interface Usuario {
     senha: string
 }
 
+export type Perfil = 'admin' | 'gestor' | 'aluno'
+
+export interface AdminMaragames {
+    id: number
+    nome: string
+    email: string
+    ativo: boolean
+}
+
+export interface UsuarioAutenticado {
+    perfil: Perfil
+    id: number
+    nome: string
+    email: string
+    instituicaoId: number | null
+}
+
 export interface Instituicao {
     id: number
     nome: string
     email: string
     tipo: string
+}
+
+export interface InstituicaoResumo extends Instituicao {
+    gestoresCount: number
+    alunosCount: number
 }
 
 export interface GestorInstituicao {
@@ -24,7 +46,6 @@ export interface AlunoInstituicao {
     email: string
     xp: number
     nivel: number
-    posicao_ranking: number | null
     trilhas_completas: number
     trilhas_andamento: number
     duvidas: string | null

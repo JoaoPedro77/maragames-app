@@ -1,12 +1,14 @@
 import { Button } from "@/components/Button"
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView, ActivityIndicator } from "react-native"
 import { Icon } from "@/components/Icon"
 import { PageCard } from "@/components/PageCard"
 import { Badge } from "@/components/Badge"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 import { useRouter } from "expo-router"
+import { useEffect, useMemo, useRef, useState, type ComponentRef } from "react"
+import { useInstitutionsController } from "@/controllers/institutionsController"
+import { RoleGate } from "@/components/RoleGate"
 import { Pagination } from "@/components/Pagination"
-import { useRef, useState, type ComponentRef } from "react"
 
 const PAGE_SIZE = 5
 
@@ -16,33 +18,49 @@ type Dado = {
     number: number
 }
 
-const dados: Dado[] = [
-    { icon: "bank", title: "Instituições", number: 12 },
-    { icon: "account-tie", title: "Gestores", number: 34 },
-    { icon: "account-school", title: "Alunos", number: 156 },
-]
-
-type Instituicao = {
-    nome: string
-    tipo: string
-    gestores: number
-    alunos: number
+export default function InstitutionsScreen() {
+    return (
+        <RoleGate permitidos={['admin']} rota="/institutions">
+            <Instituicoes />
+        </RoleGate>
+    )
 }
 
-const instituicoes: Instituicao[] = [
-    { nome: "Colégio Maragames", tipo: "Escola", gestores: 3, alunos: 48 },
-    { nome: "Universidade Norte", tipo: "Universidade", gestores: 12, alunos: 320 },
-    { nome: "Instituto TechBR", tipo: "Instituto Técnico", gestores: 5, alunos: 96 },
-    { nome: "Escola Municipal Centro", tipo: "Escola", gestores: 2, alunos: 74 },
-    { nome: "Faculdade São Lucas", tipo: "Faculdade", gestores: 7, alunos: 210 },
-]
-
-export default function Cadastro() {
+function Instituicoes() {
     const router = useRouter()
+    const { instituicoes, carregando, erro, carregarInstituicoes } = useInstitutionsController()
+
+    useEffect(() => {
+        carregarInstituicoes()
+    }, [carregarInstituicoes])
+
+    const totais = useMemo(
+        () =>
+            instituicoes.reduce(
+                (acumulado, instituicao) => ({
+                    instituicoes: acumulado.instituicoes + 1,
+                    gestores: acumulado.gestores + instituicao.gestoresCount,
+                    alunos: acumulado.alunos + instituicao.alunosCount,
+                }),
+                { instituicoes: 0, gestores: 0, alunos: 0 }
+            ),
+        [instituicoes]
+    )
+
+    const dados = useMemo<Dado[]>(
+        () => [
+            { icon: "bank", title: "Instituições", number: totais.instituicoes },
+            { icon: "account-tie", title: "Gestores", number: totais.gestores },
+            { icon: "account-school", title: "Alunos", number: totais.alunos },
+        ],
+        [totais]
+    )
+
     const [page, setPage] = useState(1)
     const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null)
     const totalPages = Math.max(1, Math.ceil(instituicoes.length / PAGE_SIZE))
-    const startIndex = (page - 1) * PAGE_SIZE
+    const paginaAtual = Math.min(page, totalPages)
+    const startIndex = (paginaAtual - 1) * PAGE_SIZE
     const instituicoesDaPagina = instituicoes.slice(startIndex, startIndex + PAGE_SIZE)
 
     function changePage(nextPage: number) {
@@ -87,44 +105,74 @@ export default function Cadastro() {
                         <Text className="text-xl font-extrabold dark:text-slate-100">
                             Exibindo {instituicoes.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, instituicoes.length)} de {instituicoes.length} Resultados
                         </Text>
-                        <View className="gap-3">
-                            {instituicoesDaPagina.map((inst) => (
-                                <PageCard key={inst.nome} contentClassName="flex-col">
-                                    <View className="flex-row justify-between items-center">
-                                        <View className="flex-col gap-1">
-                                            <Text className="text-xl font-extrabold dark:text-slate-100 max-w-40">
-                                                {inst.nome}
-                                            </Text>
-                                            <Text className="text-md font-semibold text-slate-600 dark:text-slate-400">
-                                                {inst.tipo}
-                                            </Text>
+                        {carregando ? (
+                            <View className="items-center py-10">
+                                <ActivityIndicator
+                                    size="large"
+                                    color="#dc2626"
+                                    accessibilityLabel="Carregando instituições"
+                                />
+                            </View>
+                        ) : erro ? (
+                            <View className="items-center gap-3 py-6">
+                                <Icon name="alert-circle-outline" size={32} color="#94a3b8" />
+                                <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
+                                    Não foi possível carregar as instituições.
+                                </Text>
+                                <Button
+                                    typeButton="default"
+                                    title="Tentar novamente"
+                                    icon="refresh"
+                                    size={20}
+                                    onPress={carregarInstituicoes}
+                                />
+                            </View>
+                        ) : instituicoes.length === 0 ? (
+                            <Text className="py-6 text-center text-sm font-semibold text-slate-600 dark:text-slate-400">
+                                Nenhuma instituição cadastrada.
+                            </Text>
+                        ) : (
+                            <View className="gap-3">
+                                {instituicoesDaPagina.map((inst) => (
+                                    <PageCard key={inst.id} contentClassName="flex-col">
+                                        <View className="flex-row justify-between items-center">
+                                            <View className="flex-col gap-1">
+                                                <Text className="text-xl font-extrabold dark:text-slate-100 max-w-40">
+                                                    {inst.nome}
+                                                </Text>
+                                                <Text className="text-md font-semibold text-slate-600 dark:text-slate-400">
+                                                    {inst.tipo}
+                                                </Text>
+                                            </View>
+                                            <View className="flex-col gap-1 items-end">
+                                                <Badge label="Gestores" value={inst.gestoresCount} />
+                                                <Badge label="Alunos" value={inst.alunosCount} />
+                                            </View>
                                         </View>
-                                        <View className="flex-col gap-1 items-end">
-                                            <Badge label="Gestores" value={inst.gestores} />
-                                            <Badge label="Alunos" value={inst.alunos} />
+                                        <View>
+                                            <Button
+                                                className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-500 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
+                                                typeButton="default"
+                                                title="Detalhes"
+                                                onPress={() => router.push({
+                                                    pathname: '/institution',
+                                                    params: {
+                                                        id: String(inst.id),
+                                                        nome: inst.nome,
+                                                        tipo: inst.tipo,
+                                                    },
+                                                })}
+                                                icon='information-slab-circle-outline'
+                                                size={18}
+                                            />
                                         </View>
-                                    </View>
-                                    <View>
-                                        <Button
-                                            className="mt-3 h-10 items-center text-slate-50 justify-center rounded-lg bg-slate-500 active:bg-slate-400 dark:bg-slate-700 dark:active:bg-slate-600"
-                                            typeButton="default"
-                                            title="Detalhes"
-                                            onPress={() => router.push({
-                                                pathname: '/institution',
-                                                params: {
-                                                    nome: inst.nome,
-                                                    tipo: inst.tipo,
-                                                    gestoresCount: String(inst.gestores),
-                                                },
-                                            })}
-                                            icon='information-slab-circle-outline'
-                                            size={18}
-                                        />
-                                    </View>
-                                </PageCard>
-                            ))}
-                        </View>
-                        <Pagination page={page} totalPages={totalPages} onPageChange={changePage} />
+                                    </PageCard>
+                                ))}
+                            </View>
+                        )}
+                        {!carregando && !erro && instituicoes.length > 0 && (
+                            <Pagination page={paginaAtual} totalPages={totalPages} onPageChange={changePage} />
+                        )}
                     </View>
                 </View>
                 <View className='mb-10' />

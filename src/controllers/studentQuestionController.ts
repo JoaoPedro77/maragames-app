@@ -16,8 +16,8 @@ export function useStudentQuestionController() {
     setSuccess(false);
   }
 
-  async function submitQuestion() {
-    if (sendingRef.current) return;
+  async function submitQuestion(): Promise<boolean> {
+    if (sendingRef.current) return false;
 
     setError('');
     setSuccess(false);
@@ -25,12 +25,12 @@ export function useStudentQuestionController() {
 
     if (!message) {
       setError('Descreva sua dúvida antes de enviar.');
-      return;
+      return false;
     }
 
     if (message.length > QUESTION_MAX_LENGTH) {
       setError(`Sua dúvida deve ter no máximo ${QUESTION_MAX_LENGTH} caracteres.`);
-      return;
+      return false;
     }
 
     sendingRef.current = true;
@@ -41,7 +41,7 @@ export function useStudentQuestionController() {
 
       if (authError || !authData.user?.email) {
         setError('Entre com sua conta de aluno para enviar uma dúvida.');
-        return;
+        return false;
       }
 
       const { data: student, error: studentError } = await supabase
@@ -52,12 +52,12 @@ export function useStudentQuestionController() {
 
       if (studentError) {
         setError('Não foi possível carregar seu cadastro. Tente novamente.');
-        return;
+        return false;
       }
 
       if (!student) {
         setError('Nenhum cadastro de aluno foi encontrado para sua conta.');
-        return;
+        return false;
       }
 
       const questions = student.duvidas
@@ -79,13 +79,15 @@ export function useStudentQuestionController() {
 
       if (updateError || !data) {
         setError('Não foi possível enviar sua dúvida. Tente novamente.');
-        return;
+        return false;
       }
 
       setQuestion('');
       setSuccess(true);
+      return true;
     } catch {
       setError('Não foi possível enviar sua dúvida. Verifique sua conexão e tente novamente.');
+      return false;
     } finally {
       sendingRef.current = false;
       setSending(false);

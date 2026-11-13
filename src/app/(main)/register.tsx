@@ -6,6 +6,7 @@ import { PageCard } from "@/components/PageCard"
 import { Select } from "@/components/Select"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 import { useRegisterController } from "@/controllers/registerController"
+import { RoleGate } from "@/components/RoleGate"
 import type { AlunoInstituicao, GestorInstituicao, Instituicao } from "../../../types/User"
 
 type Opcao = string | { label: string; value: string }
@@ -18,6 +19,8 @@ type Campo = {
     placeholder?: string
     secureTextEntry?: boolean
     autoComplete?: TextInputProps["autoComplete"]
+    autoCapitalize?: TextInputProps["autoCapitalize"]
+    autoCorrect?: boolean
     options?: Opcao[]
     value?: string
     onChange?: (value: string) => void
@@ -32,7 +35,15 @@ type Aba = {
     campos: Campo[]
 }
 
-export default function Cadastro() {
+export default function RegisterScreen() {
+    return (
+        <RoleGate permitidos={['admin']} rota="/register">
+            <Cadastro />
+        </RoleGate>
+    )
+}
+
+function Cadastro() {
     const [abaAtiva, setAbaAtiva] = useState<AbaId>("instituicao")
     const [instituicoes, setInstituicoes] = useState<Instituicao[]>([])
     const [gestores, setGestores] = useState<GestorInstituicao[]>([])
@@ -88,7 +99,6 @@ export default function Cadastro() {
                 { id: "nome", label: "Nome da Instituição", icon: "bank", keyboardType: "default", placeholder: "Ex: Colégio Maragames", value: inputNome, onChange: setInputNome },
                 { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
                 { id: "tipo", label: "Tipo", icon: "domain", placeholder: "Selecione o tipo de instituição", options: ["Ensino", "Empresa", "Órgão Público"], value: inputTipo, onChange: setInputTipo },
-                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do email da instituição", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha },
             ]
         },
         {
@@ -97,7 +107,7 @@ export default function Cadastro() {
                 { id: "nome", label: "Nome do Gestor", icon: "account-tie", keyboardType: "default", placeholder: "Ex: Maria Souza", value: inputNome, onChange: setInputNome },
                 { id: "instituicao", label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição", options: opcoesInstituicoes, value: inputInstituicaoId, onChange: setInputInstituicaoId },
                 { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
-                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do gestor", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha }
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do gestor", secureTextEntry: true, autoComplete: "new-password", autoCapitalize: "none", autoCorrect: false, value: inputSenha, onChange: setInputSenha }
             ]
         },
         {
@@ -106,7 +116,7 @@ export default function Cadastro() {
                 { id: "nome", label: "Nome do Aluno", icon: "account-school", keyboardType: "default", placeholder: "Ex: Maria Souza", value: inputNome, onChange: setInputNome },
                 { id: "instituicao", label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição", options: opcoesInstituicoes, value: inputInstituicaoId, onChange: setInputInstituicaoId },
                 { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
-                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do aluno", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha }
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do aluno", secureTextEntry: true, autoComplete: "new-password", autoCapitalize: "none", autoCorrect: false, value: inputSenha, onChange: setInputSenha }
             ]
         },
     ]
@@ -203,7 +213,8 @@ export default function Cadastro() {
                                                     autoComplete={campo.autoComplete}
                                                     value={campo.value}
                                                     onChangeText={campo.onChange}
-                                                    autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
+                                                    autoCapitalize={campo.autoCapitalize ?? (campo.keyboardType === "email-address" ? "none" : undefined)}
+                                                    autoCorrect={campo.autoCorrect}
                                                     returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
                                                 />
                                             )
@@ -212,6 +223,7 @@ export default function Cadastro() {
                                 )}
                                 {erro && <Text className='text-red-500 text-md font-semibold'>{erroMessage}</Text>}
                                 {sucesso && <Text className='text-emerald-600 text-md font-semibold'>{sucessoMessage}</Text>}
+
 
                             </PageCard>
                         </View>

@@ -2,35 +2,37 @@ import { Card } from '@/components/Card';
 import { useRouter } from 'expo-router';
 import { ScrollView, View, Text } from 'react-native';
 import { Icon } from '@/components/Icon';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { useRankController } from '@/controllers/rankController';
+import { RoleGate } from '@/components/RoleGate';
 import { Pagination } from '@/components/Pagination';
-import { useRef, useState, type ComponentRef } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PAGE_SIZE = 6;
 
-const usuarios = [
-    { id: 1, nome: 'Rafael Almeida', xp: 28450, nivel: 15, rank: 1, trilhasConcluidas: 28 },
-    { id: 2, nome: 'Mariana Costa', xp: 25320, nivel: 14, rank: 2, trilhasConcluidas: 25 },
-    { id: 3, nome: 'Lucas Oliveira', xp: 22890, nivel: 13, rank: 3, trilhasConcluidas: 23 },
-    { id: 4, nome: 'Beatriz Santos', xp: 20150, nivel: 12, rank: 4, trilhasConcluidas: 21 },
-    { id: 5, nome: 'Gustavo Ferreira', xp: 18760, nivel: 11, rank: 5, trilhasConcluidas: 19 },
-    { id: 6, nome: 'Amanda Lima', xp: 16540, nivel: 10, rank: 6, trilhasConcluidas: 17 },
-    { id: 7, nome: 'Pedro Henrique', xp: 14890, nivel: 9, rank: 7, trilhasConcluidas: 15 },
-    { id: 8, nome: 'Júlia Ribeiro', xp: 13210, nivel: 9, rank: 8, trilhasConcluidas: 14 },
-    { id: 9, nome: 'Felipe Martins', xp: 12450, nivel: 8, rank: 9, trilhasConcluidas: 12 },
-    { id: 10, nome: 'Larissa Gomes', xp: 11330, nivel: 8, rank: 10, trilhasConcluidas: 11 },
-    { id: 11, nome: 'Thiago Pereira', xp: 10120, nivel: 7, rank: 11, trilhasConcluidas: 10 },
-    { id: 12, nome: 'Camila Rocha', xp: 9450, nivel: 7, rank: 12, trilhasConcluidas: 9 },
-    { id: 13, nome: 'Rodrigo Souza', xp: 8760, nivel: 6, rank: 13, trilhasConcluidas: 8 },
-    { id: 14, nome: 'Vanessa Alves', xp: 7890, nivel: 6, rank: 14, trilhasConcluidas: 7 },
-    { id: 15, nome: 'Bruno Carvalho', xp: 6540, nivel: 5, rank: 15, trilhasConcluidas: 6 },
-]
+export default function RankScreen() {
+    return (
+        <RoleGate permitidos={['aluno', 'gestor', 'admin']} rota="/rank">
+            <RankContent />
+        </RoleGate>
+    )
+}
 
-export default function Rank() {
+function RankContent() {
     const router = useRouter()
+    const { usuario } = useAuth()
+    const { alunos, porInstituicao, carregarRanking } = useRankController()
+    const podeAbrirPerfil = usuario?.perfil !== 'aluno'
+
+    useEffect(() => {
+        carregarRanking()
+    }, [carregarRanking])
+
     const [page, setPage] = useState(1)
     const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null)
-    const totalPages = Math.max(1, Math.ceil(usuarios.length / PAGE_SIZE))
-    const usuariosDaPagina = usuarios.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    const totalPages = Math.max(1, Math.ceil(alunos.length / PAGE_SIZE))
+    const paginaAtual = Math.min(page, totalPages)
+    const alunosDaPagina = alunos.slice((paginaAtual - 1) * PAGE_SIZE, paginaAtual * PAGE_SIZE)
 
     function changePage(nextPage: number) {
         setPage(Math.min(totalPages, Math.max(1, nextPage)))
@@ -48,27 +50,35 @@ export default function Rank() {
                     <View className='flex-row items-center gap-2'>
                         <Icon name="trophy" size={20} color="#facc15" darkColor="#facc15" />
                         <Text className='text-xl font-bold dark:text-slate-200'>
-                            CLASSIFICAÇÃO GERAL
+                            {porInstituicao ? 'CLASSIFICAÇÃO' : 'CLASSIFICAÇÃO GERAL'}
                         </Text>
                     </View>
                     <View/>
                     <Text className='text-md font-bold dark:text-slate-400'>
-                        {usuarios.length} Estudantes
+                        {alunos.length} Estudantes
                     </Text>
                 </View>
-                {usuariosDaPagina.map((usuario) => (
+                {alunosDaPagina.map((aluno) => (
                     <Card
-                        onPress={() => router.navigate("/profile")}
+                        onPress={
+                            podeAbrirPerfil
+                                ? () =>
+                                      router.push({
+                                          pathname: '/profile',
+                                          params: { id: String(aluno.id) },
+                                      })
+                                : undefined
+                        }
                         typeCard="rank"
-                        key={usuario.id}
-                        nome={usuario.nome}
-                        xp={usuario.xp}
-                        nivel={usuario.nivel}
-                        rank={usuario.rank}
-                        trilhasConcluidas={usuario.trilhasConcluidas}
+                        key={aluno.id}
+                        nome={aluno.nome}
+                        xp={aluno.xp}
+                        nivel={aluno.nivel}
+                        rank={aluno.rank}
+                        trilhasConcluidas={aluno.trilhasConcluidas}
                     />
                 ))}
-                <Pagination page={page} totalPages={totalPages} onPageChange={changePage} />
+                <Pagination page={paginaAtual} totalPages={totalPages} onPageChange={changePage} />
                 <View className='mb-10' />
             </ScrollView>
         </View>

@@ -6,6 +6,7 @@ import { useColorScheme, View, type ColorSchemeName } from 'react-native';
 import * as SystemUI from 'expo-system-ui';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const BACKGROUND_COLORS = {
   light: '#ffffff',
@@ -41,25 +42,27 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={theme}>
-      <View style={{ flex: 1, backgroundColor }}>
-        {showChrome && <Header />}
-        <View style={{ flex: 1 }}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: 'fade',
-              animationDuration: 220,
-            }}
-          >
-            <Stack.Screen name="index" options={{ animation: 'none' }} />
-            <Stack.Screen
-              name="profile"
-              options={{ animation: 'fade', animationMatchesGesture: true }}
-            />
-          </Stack>
+      <AuthProvider>
+        <View style={{ flex: 1, backgroundColor }}>
+          {showChrome && <Header />}
+          <View style={{ flex: 1 }}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                animation: 'fade',
+                animationDuration: 220,
+              }}
+            >
+              <Stack.Screen name="index" options={{ animation: 'none' }} />
+              <Stack.Screen
+                name="profile"
+                options={{ animation: 'fade', animationMatchesGesture: true }}
+              />
+            </Stack>
+          </View>
+          {showChrome && <Footer />}
         </View>
-        {showChrome && <Footer />}
-      </View>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

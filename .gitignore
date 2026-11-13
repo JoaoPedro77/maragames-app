@@ -41,3 +41,6 @@ yarn-error.*
 /android
 
 .env
+
+RULES.md
+STATUS.md

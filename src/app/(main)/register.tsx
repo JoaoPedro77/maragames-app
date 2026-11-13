@@ -164,9 +164,6 @@ export default function Cadastro() {
                                 </View>
                             ))}
                         </View>
-                        <Text className="text-sm text-slate-500 dark:text-slate-400">
-                            Instituições: {instituicoes.length} | Gestores: {gestores.length} | Alunos: {alunos.length}
-                        </Text>
                         <View key={abaAtiva} className="bg-white dark:bg-slate-900">
                             <PageCard
                                 title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}

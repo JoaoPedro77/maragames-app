@@ -147,19 +147,10 @@ export default function ManagersScreen() {
                 <PageCard key={gestor.id} contentClassName="gap-3">
                   <View className="flex-row justify-between items-start">
                     <View className="flex-row gap-3 flex-1">
-                      <View className="relative">
-                        <View className="h-12 w-12 items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-700">
-                          <Text className="text-lg font-bold text-slate-700 dark:text-slate-200">
-                            {gestor.iniciais}
-                          </Text>
-                        </View>
-                        <View
-                          className={`absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full border-2 border-white dark:border-slate-800 ${
-                            gestor.status === 'Ativo'
-                              ? 'bg-emerald-500'
-                              : 'bg-amber-500'
-                          }`}
-                        />
+                      <View className="h-12 w-12 items-center justify-center rounded-xl bg-slate-200 dark:bg-slate-700">
+                        <Text className="text-lg font-bold text-slate-700 dark:text-slate-200">
+                          {gestor.iniciais}
+                        </Text>
                       </View>
 
                       <View className="flex-1 justify-center">

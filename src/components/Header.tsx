@@ -2,8 +2,10 @@ import { View, Text, Image } from 'react-native'
 import { Button } from './Button'
 import { usePathname, useRouter } from 'expo-router'
 import { ManagerHeader } from './ManagerHeader'
+import { useColorScheme } from 'nativewind'
 
 export function Header(props: any): any {
+    const { colorScheme } = useColorScheme()
     const router = useRouter()
     const pathName = usePathname()
     const podeVoltar = pathName === '/profile' || pathName === '/institution' || pathName === '/managers'
@@ -36,8 +38,9 @@ export function Header(props: any): any {
                             source={require('../../assets/images/maralogo.png')}
                             className="h-8 w-8"
                             resizeMode="contain"
+                            style={{ tintColor: colorScheme === 'dark' ? '#FFFFFF' : undefined }}
                         />
-                        <Text className="text-xl font-extrabold uppercase tracking-widest mt-1 text-red-600">
+                        <Text className="text-xl font-extrabold uppercase tracking-widest mt-1 text-red-600 dark:text-white">
                             MaraGames
                         </Text>
                     </View>

@@ -2,6 +2,10 @@ import { Card } from '@/components/Card';
 import { useRouter } from 'expo-router';
 import { ScrollView, View, Text } from 'react-native';
 import { Icon } from '@/components/Icon';
+import { Pagination } from '@/components/Pagination';
+import { useRef, useState, type ComponentRef } from 'react';
+
+const PAGE_SIZE = 6;
 
 const usuarios = [
     { id: 1, nome: 'Rafael Almeida', xp: 28450, nivel: 15, rank: 1, trilhasConcluidas: 28 },
@@ -23,10 +27,20 @@ const usuarios = [
 
 export default function Rank() {
     const router = useRouter()
+    const [page, setPage] = useState(1)
+    const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null)
+    const totalPages = Math.max(1, Math.ceil(usuarios.length / PAGE_SIZE))
+    const usuariosDaPagina = usuarios.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+    function changePage(nextPage: number) {
+        setPage(Math.min(totalPages, Math.max(1, nextPage)))
+        scrollRef.current?.scrollTo({ y: 0, animated: true })
+    }
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
             <ScrollView
+                ref={scrollRef}
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
@@ -42,7 +56,7 @@ export default function Rank() {
                         {usuarios.length} Estudantes
                     </Text>
                 </View>
-                {usuarios.map((usuario) => (
+                {usuariosDaPagina.map((usuario) => (
                     <Card
                         onPress={() => router.navigate("/profile")}
                         typeCard="rank"
@@ -54,6 +68,7 @@ export default function Rank() {
                         trilhasConcluidas={usuario.trilhasConcluidas}
                     />
                 ))}
+                <Pagination page={page} totalPages={totalPages} onPageChange={changePage} />
                 <View className='mb-10' />
             </ScrollView>
         </View>

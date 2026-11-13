@@ -1,7 +1,6 @@
 import { View, Text, Image } from 'react-native'
 import { Button } from './Button'
 import { usePathname, useRouter } from 'expo-router'
-import { ManagerHeader } from './ManagerHeader'
 import { useAuth } from '@/contexts/AuthContext'
 
 export function Header(props: any): any {
@@ -18,10 +17,6 @@ export function Header(props: any): any {
 
     function routeBack() {
         router.back()
-    }
-
-    if (pathName === '/institution') {
-        return <ManagerHeader onBack={routeBack} onLogout={routeLogout} />
     }
 
     return (

@@ -1,18 +1,26 @@
 import { Button } from "@/components/Button"
 import { View, ScrollView, Text, TextInputProps, KeyboardAvoidingView, Platform } from "react-native"
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "@/components/Input"
 import { PageCard } from "@/components/PageCard"
+import { Select } from "@/components/Select"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
+import { useRegisterController } from "@/controllers/registerController"
+import type { AlunoInstituicao, GestorInstituicao, Instituicao } from "../../../types/User"
+
+type Opcao = string | { label: string; value: string }
 
 type Campo = {
+    id: string
     label: string
     icon: MaterialDesignIconsIconName
     keyboardType?: TextInputProps["keyboardType"]
     placeholder?: string
     secureTextEntry?: boolean
     autoComplete?: TextInputProps["autoComplete"]
+    options?: Opcao[]
+    value?: string
+    onChange?: (value: string) => void
 }
 
 type AbaId = "instituicao" | "gestor" | "aluno"
@@ -24,40 +32,107 @@ type Aba = {
     campos: Campo[]
 }
 
-const abas: Aba[] = [
-    {
-        id: "instituicao", title: "Instituição", icon: "bank",
-        campos: [
-            { label: "Nome da Instituição", icon: "bank", keyboardType: "default", placeholder: "Ex: Colégio Maragames" },
-            { label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email" },
-            { label: "Tipo", icon: "domain", placeholder: "Selecione o tipo de instituição" },
-            { label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do email da instituição", secureTextEntry: true, autoComplete: "current-password" },
-        ]
-    },
-    {
-        id: "gestor", title: "Gestor", icon: "account-tie",
-        campos: [
-            { label: "Nome do Gestor", icon: "account-tie", keyboardType: "default", placeholder: "Ex: Maria Souza" },
-            { label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição" },
-            { label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email" },
-            { label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do gestor", secureTextEntry: true, autoComplete: "current-password" }
-        ]
-    },
-    {
-        id: "aluno", title: "Aluno", icon: "account-school",
-        campos: [
-            { label: "Nome do Aluno", icon: "account-school", keyboardType: "default", placeholder: "Ex: Maria Souza" },
-            { label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição" },
-            { label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email" },
-            { label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do aluno", secureTextEntry: true, autoComplete: "current-password" }
-        ]
-    },
-]
-
 export default function Cadastro() {
     const [abaAtiva, setAbaAtiva] = useState<AbaId>("instituicao")
+    const [instituicoes, setInstituicoes] = useState<Instituicao[]>([])
+    const [gestores, setGestores] = useState<GestorInstituicao[]>([])
+    const [alunos, setAlunos] = useState<AlunoInstituicao[]>([])
+
+    const {
+        erro,
+        erroMessage,
+        sucesso,
+        sucessoMessage,
+        inputNome,
+        setInputNome,
+        inputEmail,
+        setInputEmail,
+        inputSenha,
+        setInputSenha,
+        inputTipo,
+        setInputTipo,
+        inputInstituicaoId,
+        setInputInstituicaoId,
+        cadastrar,
+        carregarDados,
+        limparFormulario
+    } = useRegisterController()
+
+    useEffect(() => {
+        let ativo = true
+
+        carregarDados().then((dados) => {
+            if (!ativo || !dados) {
+                return
+            }
+
+            setInstituicoes(dados.instituicoes)
+            setGestores(dados.gestores)
+            setAlunos(dados.alunos)
+        })
+
+        return () => {
+            ativo = false
+        }
+    }, [carregarDados])
+
+    const opcoesInstituicoes: Opcao[] = instituicoes.map((instituicao) => ({
+        label: instituicao.nome,
+        value: String(instituicao.id),
+    }))
+
+    const abas: Aba[] = [
+        {
+            id: "instituicao", title: "Instituição", icon: "bank",
+            campos: [
+                { id: "nome", label: "Nome da Instituição", icon: "bank", keyboardType: "default", placeholder: "Ex: Colégio Maragames", value: inputNome, onChange: setInputNome },
+                { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
+                { id: "tipo", label: "Tipo", icon: "domain", placeholder: "Selecione o tipo de instituição", options: ["Ensino", "Empresa", "Órgão Público"], value: inputTipo, onChange: setInputTipo },
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do email da instituição", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha },
+            ]
+        },
+        {
+            id: "gestor", title: "Gestor", icon: "account-tie",
+            campos: [
+                { id: "nome", label: "Nome do Gestor", icon: "account-tie", keyboardType: "default", placeholder: "Ex: Maria Souza", value: inputNome, onChange: setInputNome },
+                { id: "instituicao", label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição", options: opcoesInstituicoes, value: inputInstituicaoId, onChange: setInputInstituicaoId },
+                { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do gestor", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha }
+            ]
+        },
+        {
+            id: "aluno", title: "Aluno", icon: "account-school",
+            campos: [
+                { id: "nome", label: "Nome do Aluno", icon: "account-school", keyboardType: "default", placeholder: "Ex: Maria Souza", value: inputNome, onChange: setInputNome },
+                { id: "instituicao", label: "Instituição pertencente", icon: "domain", placeholder: "Selecione a instituição", options: opcoesInstituicoes, value: inputInstituicaoId, onChange: setInputInstituicaoId },
+                { id: "email", label: "E-mail", icon: "email-outline", keyboardType: "email-address", placeholder: "voce@exemplo.com", autoComplete: "email", value: inputEmail, onChange: setInputEmail },
+                { id: "senha", label: "Criar senha", icon: "key-outline", placeholder: "Digite a senha do aluno", secureTextEntry: true, autoComplete: "current-password", value: inputSenha, onChange: setInputSenha }
+            ]
+        },
+    ]
 
     const abaAtivaInfo = abas.find((aba) => aba.id === abaAtiva)
+
+    async function handleSubmit() {
+        const emailsExistentes = [...instituicoes, ...gestores, ...alunos].map(
+            (usuario) => usuario.email
+        )
+        const result = await cadastrar(abaAtiva, emailsExistentes)
+
+        if (result.status !== 'sucesso') {
+            return
+        }
+
+        if (result.role === 'instituicao') {
+            setInstituicoes((prev) => [...prev, result.usuario])
+        } else if (result.role === 'gestor') {
+            setGestores((prev) => [...prev, result.usuario])
+        } else {
+            setAlunos((prev) => [...prev, result.usuario])
+        }
+
+        limparFormulario()
+    }
 
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
@@ -93,28 +168,51 @@ export default function Cadastro() {
                             <PageCard
                                 title={abaAtivaInfo ? `CADASTRAR ${abaAtivaInfo.title.replace("+ ", "").toUpperCase()}` : undefined}
                                 icon="form-select"
-                                footer={<Button typeButton="default" title="Confirmar" icon="check" />}
+                                footer={<Button onPress={handleSubmit} typeButton="default" title="Confirmar" icon="check" />}
                                 footerClassName="mt-5"
                             >
                                 {abaAtivaInfo && (
                                     <View className="flex-grow gap-5">
-                                        {abaAtivaInfo.campos.map((campo, index) => (
-                                            <Input
-                                                key={campo.label}
-                                                icon={campo.icon}
-                                                size={20}
-                                                color="#94a3b8"
-                                                label={campo.label}
-                                                placeholder={campo.placeholder}
-                                                keyboardType={campo.keyboardType}
-                                                secureTextEntry={campo.secureTextEntry}
-                                                autoComplete={campo.autoComplete}
-                                                autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
-                                                returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
-                                            />
-                                        ))}
+                                        {abaAtivaInfo.campos.map((campo, index) => {
+                                            if (campo.options) {
+                                                return (
+                                                    <Select
+                                                        key={campo.id}
+                                                        icon={campo.icon}
+                                                        size={20}
+                                                        color="#94a3b8"
+                                                        label={campo.label}
+                                                        placeholder={campo.placeholder}
+                                                        options={campo.options}
+                                                        value={campo.value}
+                                                        onChange={(value) => campo.onChange?.(value)}
+                                                    />
+                                                )
+                                            }
+
+                                            return (
+                                                <Input
+                                                    key={campo.id}
+                                                    icon={campo.icon}
+                                                    size={20}
+                                                    color="#94a3b8"
+                                                    label={campo.label}
+                                                    placeholder={campo.placeholder}
+                                                    keyboardType={campo.keyboardType}
+                                                    secureTextEntry={campo.secureTextEntry}
+                                                    autoComplete={campo.autoComplete}
+                                                    value={campo.value}
+                                                    onChangeText={campo.onChange}
+                                                    autoCapitalize={campo.keyboardType === "email-address" ? "none" : undefined}
+                                                    returnKeyType={index === abaAtivaInfo.campos.length - 1 ? "done" : "next"}
+                                                />
+                                            )
+                                        })}
                                     </View>
                                 )}
+                                {erro && <Text className='text-red-500 text-md font-semibold'>{erroMessage}</Text>}
+                                {sucesso && <Text className='text-emerald-600 text-md font-semibold'>{sucessoMessage}</Text>}
+
                             </PageCard>
                         </View>
                     </View>

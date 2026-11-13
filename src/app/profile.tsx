@@ -1,8 +1,8 @@
-import { GradientText } from '@/components/GradientText';
 import { Card } from '@/components/Card';
 import { PageCard } from '@/components/PageCard';
 import { View, Text, Image, ScrollView } from 'react-native';
 import { Icon } from '@/components/Icon';
+import { StudentQuestionForm } from '@/components/StudentQuestionForm';
 
 const mockProfile = {
   name: 'João da Silva',
@@ -33,6 +33,8 @@ export default function Profile() {
       <ScrollView
         className="flex-1 bg-white dark:bg-slate-900 gap-3 px-6"
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
       >
 
         <View className="flex flex-row gap-4 pt-5 items-center">
@@ -52,9 +54,9 @@ export default function Profile() {
         <View className="mt-8 flex flex-col gap-2 items-center justify-center">
           <View className="flex flex-row items-center justify-center">
             <Icon name="fire" size={20} color="#5049e3" darkColor="#5049e3" />
-            <GradientText className="text-xl font-bold">
+            <Text className="text-xl font-bold text-slate-900 dark:text-slate-100">
               {mockProfile.sequency}
-            </GradientText>
+            </Text>
           </View>
           <PageCard contentClassName="flex-row w-full">
             {stats.map((stat, index) => (
@@ -63,7 +65,7 @@ export default function Profile() {
                   <Text className="text-slate-600 dark:text-slate-400 text-md font-medium mb-1">
                     {stat.label}
                   </Text>
-                  <Text className="text-red-500 text-2xl font-bold">
+                  <Text className="text-[#8D84E0] text-2xl font-bold">
                     {stat.value}
                   </Text>
                 </View>
@@ -90,18 +92,7 @@ export default function Profile() {
           ))}
         </View>
 
-        <PageCard
-        className="mt-6"
-        title='Dúvidas?'
-        icon='information-slab-circle-outline'
-        >
-          <Text className="text-slate-600 dark:text-slate-400 text-md mb-1">
-            Caso tenha alguma dúvida, Descreva-nos:
-          </Text>
-          <Text className="dark:text-white font-bold text-md mb-1">
-            ALGUM AMIGO COLOCA O FORMULARIO AQUI :)
-          </Text>
-        </PageCard>
+        <StudentQuestionForm />
       </ScrollView >
     </View>
   );

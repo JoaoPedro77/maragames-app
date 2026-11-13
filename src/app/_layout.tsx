@@ -14,7 +14,7 @@ const BACKGROUND_COLORS = {
 
 const APP_ROUTES = ['/register', '/institutions', '/rank', '/profile', '/managers', '/institution'];
 
-function getBackgroundColor(colorScheme: ColorSchemeName) {
+function getBackgroundColor(colorScheme: ColorSchemeName | null) {
   return colorScheme === 'dark' ? BACKGROUND_COLORS.dark : BACKGROUND_COLORS.light;
 }
 

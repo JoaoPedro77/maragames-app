@@ -3,21 +3,25 @@ export interface Usuario {
     senha: string
 }
 
-export interface Instituicao extends Usuario {
-    id?: number
+export interface Instituicao {
+    id: number
     nome: string
+    email: string
     tipo: string
 }
 
-export interface GestorInstituicao extends Usuario {
-    id?: number
-    instituicao_id?: number
+export interface GestorInstituicao {
+    id: number
+    instituicao_id: number
     nome: string
+    email: string
 }
 
-export interface AlunoInstituicao extends Usuario {
-    id?: number
-    instituicao_id?: number
+export interface AlunoInstituicao {
+    id: number
+    instituicao_id: number
+    nome: string
+    email: string
     xp: number
     nivel: number
     posicao_ranking: number | null
@@ -25,3 +29,11 @@ export interface AlunoInstituicao extends Usuario {
     trilhas_andamento: number
     duvidas: string | null
 }
+
+export type Role = 'instituicao' | 'gestor' | 'aluno'
+
+export type CadastroResult =
+    | { status: 'erro'; message: string }
+    | { status: 'sucesso'; role: 'instituicao'; usuario: Instituicao }
+    | { status: 'sucesso'; role: 'gestor'; usuario: GestorInstituicao }
+    | { status: 'sucesso'; role: 'aluno'; usuario: AlunoInstituicao }

@@ -5,6 +5,10 @@ import { PageCard } from "@/components/PageCard"
 import { Badge } from "@/components/Badge"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 import { useRouter } from "expo-router"
+import { Pagination } from "@/components/Pagination"
+import { useRef, useState, type ComponentRef } from "react"
+
+const PAGE_SIZE = 5
 
 type Dado = {
     icon: MaterialDesignIconsIconName
@@ -35,9 +39,21 @@ const instituicoes: Instituicao[] = [
 
 export default function Cadastro() {
     const router = useRouter()
+    const [page, setPage] = useState(1)
+    const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null)
+    const totalPages = Math.max(1, Math.ceil(instituicoes.length / PAGE_SIZE))
+    const startIndex = (page - 1) * PAGE_SIZE
+    const instituicoesDaPagina = instituicoes.slice(startIndex, startIndex + PAGE_SIZE)
+
+    function changePage(nextPage: number) {
+        setPage(Math.min(totalPages, Math.max(1, nextPage)))
+        scrollRef.current?.scrollTo({ y: 0, animated: true })
+    }
+
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
             <ScrollView
+                ref={scrollRef}
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
@@ -69,10 +85,10 @@ export default function Cadastro() {
                     </View>
                     <View className="gap-2">
                         <Text className="text-xl font-extrabold dark:text-slate-100">
-                            Exibindo {instituicoes.length} Resultados
+                            Exibindo {instituicoes.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, instituicoes.length)} de {instituicoes.length} Resultados
                         </Text>
                         <View className="gap-3">
-                            {instituicoes.map((inst) => (
+                            {instituicoesDaPagina.map((inst) => (
                                 <PageCard key={inst.nome} contentClassName="flex-col">
                                     <View className="flex-row justify-between items-center">
                                         <View className="flex-col gap-1">
@@ -108,6 +124,7 @@ export default function Cadastro() {
                                 </PageCard>
                             ))}
                         </View>
+                        <Pagination page={page} totalPages={totalPages} onPageChange={changePage} />
                     </View>
                 </View>
                 <View className='mb-10' />

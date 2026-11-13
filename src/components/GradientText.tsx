@@ -1,6 +1,15 @@
-import MaskedView from '@react-native-masked-view/masked-view';
+import MaskedViewBase from '@react-native-masked-view/masked-view';
 import { LinearGradient, LinearGradientProps } from 'expo-linear-gradient';
+import type { ComponentType, ReactElement } from 'react';
 import { Text } from 'react-native';
+import type { ViewProps } from 'react-native';
+
+type MaskedViewProps = ViewProps & {
+  maskElement: ReactElement;
+  androidRenderingMode?: 'software' | 'hardware';
+};
+
+const MaskedView = MaskedViewBase as unknown as ComponentType<MaskedViewProps>;
 
 type GradientTextProps = {
   children: string;

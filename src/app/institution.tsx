@@ -142,7 +142,6 @@ function InstitutionContent() {
               </Text>
             </Pressable>
           </Link>
-          {!ehGestor && (
             <Link
               href={{
                 pathname: '/managers',
@@ -162,7 +161,6 @@ function InstitutionContent() {
                 </Text>
               </Pressable>
             </Link>
-          )}
         </View>
       </View>
       <View className="gap-3">

@@ -6,11 +6,12 @@ import { Input } from '@/components/Input';
 import { Icon } from '@/components/Icon';
 import { Button } from '@/components/Button';
 import { RoleGate } from '@/components/RoleGate';
+import { useAuth } from '@/contexts/AuthContext';
 import { useManagersController } from '@/controllers/managersController';
 
 export default function ManagersScreen() {
   return (
-    <RoleGate permitidos={['admin']}>
+    <RoleGate permitidos={['gestor', 'admin']}>
       <ManagersContent />
     </RoleGate>
   );
@@ -38,9 +39,14 @@ function ManagersContent() {
     tipo?: string;
   }>();
 
+  const { usuario } = useAuth();
+  const ehGestor = usuario?.perfil === 'gestor';
   const idParam = params.id ? Number(params.id) : null;
-  const instituicaoId =
+  const idValido =
     idParam !== null && !Number.isNaN(idParam) ? idParam : null;
+  const instituicaoId = ehGestor
+    ? usuario?.instituicaoId ?? null
+    : idValido;
 
   const { gestores, carregando, erro, carregarGestores } =
     useManagersController(instituicaoId);
@@ -70,15 +76,19 @@ function ManagersContent() {
       <View className="flex-1 items-center justify-center gap-3 bg-white px-6 dark:bg-slate-900">
         <Icon name="bank-off-outline" size={40} color="#94a3b8" />
         <Text className="text-center text-base font-semibold text-slate-600 dark:text-slate-300">
-          Selecione uma instituição para visualizar os gestores.
+          {ehGestor
+            ? 'Sua conta não está vinculada a uma instituição.'
+            : 'Selecione uma instituição para visualizar os gestores.'}
         </Text>
-        <Link href="/institutions" asChild>
-          <Pressable accessibilityRole="link" className="min-h-11 justify-center">
-            <Text className="text-sm font-bold text-red-600 dark:text-[#ff535b]">
-              Ir para instituições
-            </Text>
-          </Pressable>
-        </Link>
+        {!ehGestor && (
+          <Link href="/institutions" asChild>
+            <Pressable accessibilityRole="link" className="min-h-11 justify-center">
+              <Text className="text-sm font-bold text-red-600 dark:text-[#ff535b]">
+                Ir para instituições
+              </Text>
+            </Pressable>
+          </Link>
+        )}
       </View>
     );
   }
@@ -90,15 +100,10 @@ function ManagersContent() {
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
-      <View className="gap-1">
-        <Text className="text-2xl font-extrabold dark:text-slate-100">
+      <Text className="text-2xl font-extrabold dark:text-slate-100">
           Gestores
-        </Text>
-        <Text className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-          #{instituicaoId}
-        </Text>
-      </View>
-
+      </Text>
+      
       <PageCard contentClassName="flex-row items-center gap-4">
         <View className="h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 dark:bg-red-500/20">
           <Icon name="bank" size={24} color="#ef4444" darkColor="#ef4444" />
@@ -218,14 +223,15 @@ function ManagersContent() {
           ))
         )}
       </View>
-
-      <Button
-        typeButton="default"
-        title="Vincular Novo Gestor (RF06)"
-        icon="account-plus"
-        size={20}
-        onPress={() => router.navigate('/register')}
-      />
+      {!ehGestor && (
+        <Button
+          typeButton="default"
+          title="Vincular Novo Gestor"
+          icon="account-plus"
+          size={20}
+          onPress={() => router.navigate('/register')}
+        />
+      )}
     </ScrollView>
   );
 }

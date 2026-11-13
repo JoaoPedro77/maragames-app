@@ -5,9 +5,12 @@ import { PageCard } from "@/components/PageCard"
 import { Badge } from "@/components/Badge"
 import type { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons"
 import { useRouter } from "expo-router"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef, useState, type ComponentRef } from "react"
 import { useInstitutionsController } from "@/controllers/institutionsController"
 import { RoleGate } from "@/components/RoleGate"
+import { Pagination } from "@/components/Pagination"
+
+const PAGE_SIZE = 5
 
 type Dado = {
     icon: MaterialDesignIconsIconName
@@ -53,9 +56,22 @@ function Instituicoes() {
         [totais]
     )
 
+    const [page, setPage] = useState(1)
+    const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null)
+    const totalPages = Math.max(1, Math.ceil(instituicoes.length / PAGE_SIZE))
+    const paginaAtual = Math.min(page, totalPages)
+    const startIndex = (paginaAtual - 1) * PAGE_SIZE
+    const instituicoesDaPagina = instituicoes.slice(startIndex, startIndex + PAGE_SIZE)
+
+    function changePage(nextPage: number) {
+        setPage(Math.min(totalPages, Math.max(1, nextPage)))
+        scrollRef.current?.scrollTo({ y: 0, animated: true })
+    }
+
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
             <ScrollView
+                ref={scrollRef}
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
@@ -87,7 +103,7 @@ function Instituicoes() {
                     </View>
                     <View className="gap-2">
                         <Text className="text-xl font-extrabold dark:text-slate-100">
-                            Exibindo {instituicoes.length} Resultados
+                            Exibindo {instituicoes.length === 0 ? 0 : startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, instituicoes.length)} de {instituicoes.length} Resultados
                         </Text>
                         {carregando ? (
                             <View className="items-center py-10">
@@ -117,7 +133,7 @@ function Instituicoes() {
                             </Text>
                         ) : (
                             <View className="gap-3">
-                                {instituicoes.map((inst) => (
+                                {instituicoesDaPagina.map((inst) => (
                                     <PageCard key={inst.id} contentClassName="flex-col">
                                         <View className="flex-row justify-between items-center">
                                             <View className="flex-col gap-1">
@@ -153,6 +169,9 @@ function Instituicoes() {
                                     </PageCard>
                                 ))}
                             </View>
+                        )}
+                        {!carregando && !erro && instituicoes.length > 0 && (
+                            <Pagination page={paginaAtual} totalPages={totalPages} onPageChange={changePage} />
                         )}
                     </View>
                 </View>

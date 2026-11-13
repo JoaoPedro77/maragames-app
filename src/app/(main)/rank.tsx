@@ -2,9 +2,12 @@ import { Card } from '@/components/Card';
 import { useRouter } from 'expo-router';
 import { ScrollView, View, Text } from 'react-native';
 import { Icon } from '@/components/Icon';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { useRankController } from '@/controllers/rankController';
 import { RoleGate } from '@/components/RoleGate';
+import { Pagination } from '@/components/Pagination';
+
+const PAGE_SIZE = 6;
 
 export default function RankScreen() {
     return (
@@ -22,9 +25,21 @@ function RankContent() {
         carregarRanking()
     }, [carregarRanking])
 
+    const [page, setPage] = useState(1)
+    const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null)
+    const totalPages = Math.max(1, Math.ceil(alunos.length / PAGE_SIZE))
+    const paginaAtual = Math.min(page, totalPages)
+    const alunosDaPagina = alunos.slice((paginaAtual - 1) * PAGE_SIZE, paginaAtual * PAGE_SIZE)
+
+    function changePage(nextPage: number) {
+        setPage(Math.min(totalPages, Math.max(1, nextPage)))
+        scrollRef.current?.scrollTo({ y: 0, animated: true })
+    }
+
     return (
         <View className="flex-1 bg-white dark:bg-slate-900">
             <ScrollView
+                ref={scrollRef}
                 className="flex-1 bg-white dark:bg-slate-900 gap-3 pt-4 px-6"
                 showsVerticalScrollIndicator={false}
             >
@@ -40,7 +55,7 @@ function RankContent() {
                         {alunos.length} Estudantes
                     </Text>
                 </View>
-                {alunos.map((aluno) => (
+                {alunosDaPagina.map((aluno) => (
                     <Card
                         onPress={() =>
                             router.push({
@@ -57,6 +72,7 @@ function RankContent() {
                         trilhasConcluidas={aluno.trilhasConcluidas}
                     />
                 ))}
+                <Pagination page={paginaAtual} totalPages={totalPages} onPageChange={changePage} />
                 <View className='mb-10' />
             </ScrollView>
         </View>

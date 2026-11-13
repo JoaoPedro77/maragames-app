@@ -1,6 +1,5 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import { View, Text, Pressable } from 'react-native'
-import { GradientText } from "./GradientText";
 
 type DiscenteProps = {
     id?: number;
@@ -59,27 +58,15 @@ export function RankCard(props: RankProps) {
                         {props.rank >= 10 ? props.rank : '0' + props.rank}
                     </Text>
                     <View className='bg-slate-300 dark:bg-slate-700 rounded-full ml-2 w-12 h-12 items-center justify-center'>
-                        {
-                            props.rank === 1
-                                ? <GradientText className="text-2xl font-bold">
-                                    {props.nome[0]}
-                                </GradientText>
-                                : <Text className="text-slate-800 dark:text-slate-300 text-lg font-bold">
-                                    {props.nome[0]}
-                                </Text>
-                        }
+                        <Text className="text-slate-800 dark:text-slate-300 text-lg font-bold">
+                            {props.nome[0]}
+                        </Text>
                     </View>
 
                     <View>
-                        {
-                            props.rank === 1
-                                ? <GradientText className="text-lg font-semibold">
-                                    {props.nome}
-                                </GradientText>
-                                : <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
-                                    {props.nome}
-                                </Text>
-                        }
+                        <Text className="text-slate-900 dark:text-slate-100 text-lg font-semibold">
+                            {props.nome}
+                        </Text>
 
 
                         <Text className="font-bold text-slate-400 dark:text-[#bda3ff]">
@@ -88,7 +75,7 @@ export function RankCard(props: RankProps) {
                     </View>
                 </View>
                 <View className='flex-grow items-end'>
-                    <Text className="text-red-500 text-xl font-bold ">
+                    <Text className="text-[#8D84E0] text-xl font-bold ">
                         {props.xp}
                     </Text>
                     <Text className="text-slate-400 text-md font-extrabold">
@@ -115,7 +102,7 @@ function DiscenteCard(props: DiscenteProps) {
                     </Text>
                 </View>
 
-                <Text className="text-red-500 text-2xl font-bold">
+                <Text className="text-[#8D84E0] text-2xl font-bold">
                     {props.progress}
                 </Text>
             </View>

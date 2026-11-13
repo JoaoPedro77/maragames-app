@@ -9,6 +9,7 @@ import { RoleGate } from '@/components/RoleGate';
 import { useAuth } from '@/contexts/AuthContext';
 import { homePorPerfil } from '@/hooks/useRequireRole';
 import { useAlunoDetalheController } from '@/controllers/alunoDetalheController';
+import { StudentQuestionForm } from '@/components/StudentQuestionForm';
 
 const mockSequency = '15 dias em sequência!';
 const mockInProgressTracks = [
@@ -130,6 +131,8 @@ function ProfileContent() {
       <ScrollView
         className="flex-1 bg-white dark:bg-slate-900 gap-3 px-6"
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
       >
         <View className="flex flex-row gap-4 pt-5 items-center">
           <Image className="rounded-full h-20 w-20" source={{ uri: avatar }} />
@@ -157,7 +160,7 @@ function ProfileContent() {
                   <Text className="text-slate-600 dark:text-slate-400 text-md font-medium mb-1">
                     {stat.label}
                   </Text>
-                  <Text className="text-red-500 text-2xl font-bold">
+                  <Text className="text-[#8D84E0] text-2xl font-bold">
                     {stat.value}
                   </Text>
                 </View>
@@ -184,28 +187,21 @@ function ProfileContent() {
           ))}
         </View>
 
-        <PageCard
-          className="mt-6"
-          title="Dúvidas?"
-          icon="information-slab-circle-outline"
-        >
-          {ehDono ? (
-            <>
-              <Text className="text-slate-600 dark:text-slate-400 text-md mb-1">
-                Caso tenha alguma dúvida, Descreva-nos:
-              </Text>
-              <Text className="dark:text-white font-bold text-md mb-1">
-                ALGUM AMIGO COLOCA O FORMULARIO AQUI :)
-              </Text>
-            </>
-          ) : (
+        {ehDono ? (
+          <StudentQuestionForm />
+        ) : (
+          <PageCard
+            className="mt-6"
+            title="Dúvidas?"
+            icon="information-slab-circle-outline"
+          >
             <Text className="text-slate-600 dark:text-slate-400 text-md leading-5">
               {aluno.duvidas?.trim()
                 ? aluno.duvidas
                 : 'Nenhuma dificuldade registrada.'}
             </Text>
-          )}
-        </PageCard>
+          </PageCard>
+        )}
 
         <Text className="mb-10 text-xs leading-5 text-slate-500 dark:text-slate-400">
           A sequência e os detalhes das trilhas em andamento são dados simulados

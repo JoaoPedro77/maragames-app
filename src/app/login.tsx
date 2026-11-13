@@ -4,6 +4,7 @@ import { Input } from '@/components/Input';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
+import { useColorScheme } from 'nativewind';
 import {
   Image,
   KeyboardAvoidingView,
@@ -19,6 +20,8 @@ import { homePorPerfil } from '@/hooks/useRequireRole';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
   const { usuario, carregando: carregandoSessao } = useAuth();
   const [enviando, setEnviando] = useState(false);
 
@@ -53,27 +56,46 @@ export default function LoginScreen() {
   }
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-slate-900">
+      <View
+        pointerEvents="none"
+        accessible={false}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        className="absolute inset-0 overflow-hidden"
+      >
+        <Image
+          source={require('../../assets/images/maralogooutline.png')}
+          className="absolute -bottom-40 -right-43 h-[560px] w-[560px] opacity-50"
+          resizeMode="contain"
+        />
+      </View>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
       >
         <ScrollView
           className="flex-1"
-          contentContainerClassName="flex-grow justify-center px-6 py-10"
+          contentContainerClassName="flex-grow justify-start px-6 pt-4 pb-10"
           keyboardShouldPersistTaps="handled"
         >
-          <View className="mb-10 flex flex-row items-center">
-            <Image
-              source={require('../../assets/images/maralogo.png')}
-              className="h-12 w-12"
-              resizeMode="contain"
-            />
-            <Text className="text-3xl font-black uppercase tracking-widest text-red-500">
+          <View className="mb-10 items-center">
+            <View className="h-40 w-40 items-center justify-center">
+              <Image
+                accessible={false}
+                source={require('../../assets/images/maralogo.png')}
+                className="h-36 w-36"
+                tintColor={isDark ? '#ffffff' : undefined}
+                resizeMode="contain"
+              />
+            </View>
+            <Text
+              className="absolute top-36 text-center text-3xl font-black uppercase tracking-widest text-red-500 dark:text-white"
+            >
               MaraGames
             </Text>
           </View>
 
-          <View className="mb-10">
+          <View className="mb-10 mt-7">
             <GradientText>Bem-vindo de volta</GradientText>
             <Text className="mt-3 text-lg leading-6 text-slate-600 dark:text-slate-400">
               Insira as suas credenciais para acessar a sua conta.

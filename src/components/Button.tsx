@@ -52,7 +52,7 @@ function ButtonDefault({ title, icon, size, color, darkColor, onPressIn, ...prop
   return (
     <Pressable
       accessibilityRole="button"
-      className="mt-3 h-14 items-center justify-center rounded-xl bg-red-600 active:bg-red-800"
+      className="mt-3 h-14 items-center justify-center rounded-xl bg-[#593CBE] active:bg-[#3A2681] disabled:opacity-40"
       {...props}
       onPressIn={(event) => {
         if (!props.disabled) impactHaptic();
@@ -77,7 +77,7 @@ function ButtonFooter({ title, icon, size, color, darkColor, route, ativo = fals
       className={
         !ativo
           ? "h-16 flex-1 items-center p-3 justify-center rounded-xl bg-slate-100 active:bg-slate-300 dark:bg-slate-800 dark:active:bg-slate-700"
-          : "h-16 flex-1 items-center p-3 justify-center rounded-lg bg-red-600 dark:active:bg-red-800"
+          : "h-16 flex-1 items-center p-3 justify-center rounded-lg bg-[#593CBE] active:bg-[#3A2681]"
       }
       {...props}
       onPressIn={(event) => {
@@ -100,7 +100,7 @@ function ButtonTabs({ title, icon, size, color, darkColor, ativo = false, onPres
       className={
         !ativo
           ? "items-center w-full h-full justify-center rounded-xl bg-slate-100 active:bg-slate-300 dark:bg-slate-800 dark:active:bg-slate-700"
-          : "items-center w-full h-full justify-center rounded-xl bg-red-600 active:bg-red-800"
+          : "items-center w-full h-full justify-center rounded-xl bg-[#593CBE] active:bg-[#3A2681]"
       }
       {...props}
       onPressIn={(event) => {
